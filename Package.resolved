@@ -1,0 +1,15 @@
+{
+  "originHash" : "041ae1492998f2137f6a17723e9cf8b6f0faac6af7a632889ad2ca27f92cf3e1",
+  "pins" : [
+    {
+      "identity" : "swift-format-plugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Brent-Tunnicliff/swift-format-plugin",
+      "state" : {
+        "revision" : "4783d8fefdc95e7ee7edde17ae505cc871be6e85",
+        "version" : "2.0.2"
+      }
+    }
+  ],
+  "version" : 3
+}
