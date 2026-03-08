@@ -5,10 +5,8 @@ import Testing
 
 #if canImport(FoundationEssentials)
     import FoundationEssentials
-#elseif canImport(Foundation)
-    import Foundation
 #else
-    #error("SwiftUUID requires Foundation or FoundationEssentials")
+    import Foundation
 #endif
 
 struct UUIDVersionTests {

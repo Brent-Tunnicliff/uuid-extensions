@@ -9,7 +9,7 @@ struct UUIDMacroTests {
 
     #if canImport(FoundationEssentials)
         private let foundation = "FoundationEssentials"
-    #elseif canImport(Foundation)
+    #else
         private let foundation = "Foundation"
     #endif
 

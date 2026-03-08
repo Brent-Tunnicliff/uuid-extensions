@@ -2,10 +2,8 @@
 
 #if canImport(FoundationEssentials)
     public import FoundationEssentials
-#elseif canImport(Foundation)
-    public import Foundation
 #else
-    #error("SwiftUUID requires Foundation or FoundationEssentials")
+    public import Foundation
 #endif
 
 extension UUID {

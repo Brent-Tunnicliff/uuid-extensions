@@ -2,10 +2,8 @@
 
 #if canImport(FoundationEssentials)
     public import FoundationEssentials
-#elseif canImport(Foundation)
-    public import Foundation
 #else
-    #error("SwiftUUID requires Foundation or FoundationEssentials")
+    public import Foundation
 #endif
 
 /// Macro for checking if uuid is valid at compile time and removing the usual optional.
