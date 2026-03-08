@@ -25,7 +25,7 @@ jobs:
     with:
       platform: "${{ matrix.target.platform }}"
       runs_on: "macos-26"
-      scheme: "swift-uuid"
+      scheme: "SwiftUUID"
       simulator_version: "${{ matrix.target.simulator_version }}"
       xcode_path: "/Applications/Xcode_26.3.app"
 
@@ -35,8 +35,7 @@ jobs:
     with:
       platform: "macOS"
       runs_on: "macos-26"
-      scheme: "SwiftUUIDMacros"
-      simulator_version: ""
+      scheme: "swift-uuid"
       xcode_path: "/Applications/Xcode_26.3.app"
 
   package_swift:

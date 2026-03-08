@@ -9,12 +9,27 @@
     }
   ],
   "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "SwiftUUID",
+          "name" : "SwiftUUID"
+        }
+      ]
+    },
     "defaultTestExecutionTimeAllowance" : 60,
-    "performanceAntipatternCheckerEnabled" : true,
     "testExecutionOrdering" : "random",
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SwiftUUIDTests",
+        "name" : "SwiftUUIDTests"
+      }
+    },
     {
       "target" : {
         "containerPath" : "container:",
