@@ -4,6 +4,6 @@ import SwiftCompilerPlugin
 import SwiftSyntaxMacros
 
 @main
-struct UUIDMacrosPlugin: CompilerPlugin {
+struct UUIDMacrosModulePlugin: CompilerPlugin {
     let providingMacros: [any Macro.Type] = [UUIDMacro.self]
 }

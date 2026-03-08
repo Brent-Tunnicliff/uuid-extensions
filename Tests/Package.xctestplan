@@ -13,8 +13,13 @@
       "targets" : [
         {
           "containerPath" : "container:",
-          "identifier" : "SwiftUUID",
-          "name" : "SwiftUUID"
+          "identifier" : "UUIDMacro",
+          "name" : "UUIDMacro"
+        },
+        {
+          "containerPath" : "container:",
+          "identifier" : "UUIDVersions",
+          "name" : "UUIDVersions"
         }
       ]
     },
@@ -26,15 +31,22 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "SwiftUUIDTests",
-        "name" : "SwiftUUIDTests"
+        "identifier" : "UUIDMacrosModuleTests",
+        "name" : "UUIDMacrosModuleTests"
       }
     },
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "SwiftUUIDMacrosTests",
-        "name" : "SwiftUUIDMacrosTests"
+        "identifier" : "UUIDVersionsTests",
+        "name" : "UUIDVersionsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "UUIDMacroTests",
+        "name" : "UUIDMacroTests"
       }
     }
   ],

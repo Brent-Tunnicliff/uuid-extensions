@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "SwiftUUID"
-               BuildableName = "SwiftUUID"
-               BlueprintName = "SwiftUUID"
+               BlueprintIdentifier = "UUIDVersions"
+               BuildableName = "UUIDVersions"
+               BlueprintName = "UUIDVersions"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,7 +30,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:Tests/SwiftUUIDTests/SwiftUUIDTests.xctestplan"
+            reference = "container:Tests/UUIDVersionsTests/UUIDVersionsTests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
@@ -55,9 +55,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "SwiftUUID"
-            BuildableName = "SwiftUUID"
-            BlueprintName = "SwiftUUID"
+            BlueprintIdentifier = "UUIDVersions"
+            BuildableName = "UUIDVersions"
+            BlueprintName = "UUIDVersions"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>

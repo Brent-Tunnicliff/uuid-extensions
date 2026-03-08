@@ -1,7 +1,7 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
 import Testing
-@testable import SwiftUUID
+@testable import UUIDVersions
 
 #if canImport(FoundationEssentials)
     import FoundationEssentials
@@ -12,7 +12,7 @@ import Testing
 #endif
 
 struct UUIDVersionTests {
-    typealias UUIDVersion = SwiftUUID.UUIDVersion<MockUUIDGenerator>
+    typealias UUIDVersion = UUIDVersions.UUIDVersion<MockUUIDGenerator>
     private let mockUUIDGenerator = MockUUIDGenerator()
 
     @Test(arguments: UUIDVersion.Value.allCases)

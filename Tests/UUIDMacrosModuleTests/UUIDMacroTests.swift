@@ -1,16 +1,12 @@
 import SwiftSyntaxMacroExpansion
 import SwiftSyntaxMacrosGenericTestSupport
 import Testing
+import UUIDMacrosModule
 
-#if canImport(SwiftUUIDMacros)
-    import SwiftUUIDMacros
-    private let testMacros: [String: MacroSpec] = ["uuid": MacroSpec(type: UUIDMacro.self)]
-#else
-    private let testMacros: [String: MacroSpec] = [:]
-#endif
-
-@Suite(.enabled(if: !testMacros.isEmpty, "Platform does not support Macros"))
+@Suite
 struct UUIDMacroTests {
+    let testMacros = ["uuid": MacroSpec(type: UUIDMacro.self)]
+
     #if canImport(FoundationEssentials)
         private let foundation = "FoundationEssentials"
     #elseif canImport(Foundation)

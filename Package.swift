@@ -18,9 +18,13 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "SwiftUUID",
-            targets: ["SwiftUUID"]
-        )
+            name: "UUIDMacro",
+            targets: ["UUIDMacro"]
+        ),
+        .library(
+            name: "UUIDVersions",
+            targets: ["UUIDVersions"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Brent-Tunnicliff/swift-format-plugin", .upToNextMajor(from: "2.0.0")),
@@ -28,15 +32,15 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "SwiftUUID",
-            dependencies: ["SwiftUUIDMacros"]
+            name: "UUIDMacro",
+            dependencies: ["UUIDMacrosModule"]
         ),
         .testTarget(
-            name: "SwiftUUIDTests",
-            dependencies: ["SwiftUUID"]
+            name: "UUIDMacroTests",
+            dependencies: ["UUIDMacro"]
         ),
         .macro(
-            name: "SwiftUUIDMacros",
+            name: "UUIDMacrosModule",
             dependencies: [
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
@@ -45,12 +49,17 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "SwiftUUIDMacrosTests",
+            name: "UUIDMacrosModuleTests",
             dependencies: [
-                "SwiftUUIDMacros",
+                "UUIDMacrosModule",
                 .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
             ]
+        ),
+        .target(name: "UUIDVersions"),
+        .testTarget(
+            name: "UUIDVersionsTests",
+            dependencies: ["UUIDVersions"]
         ),
     ]
 )

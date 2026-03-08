@@ -1,7 +1,7 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-import SwiftUUID
 import Testing
+import UUIDMacro
 
 #if canImport(FoundationEssentials)
     import FoundationEssentials
