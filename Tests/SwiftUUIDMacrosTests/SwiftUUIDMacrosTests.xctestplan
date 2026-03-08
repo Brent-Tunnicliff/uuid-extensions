@@ -1,0 +1,27 @@
+{
+  "configurations" : [
+    {
+      "id" : "1A17EC4A-21C7-4A3C-98A0-01B26D08EECE",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "defaultTestExecutionTimeAllowance" : 60,
+    "performanceAntipatternCheckerEnabled" : true,
+    "testExecutionOrdering" : "random",
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SwiftUUIDMacrosTests",
+        "name" : "SwiftUUIDMacrosTests"
+      }
+    }
+  ],
+  "version" : 1
+}
