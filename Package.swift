@@ -11,10 +11,10 @@ let package = Package(
     name: "swift-uuid",
     platforms: [
         .iOS(.v13),
+        .macCatalyst(.v13),
         .macOS(.v12),
         .tvOS(.v13),
         .watchOS(.v6),
-        .macCatalyst(.v13),
     ],
     products: [
         .library(

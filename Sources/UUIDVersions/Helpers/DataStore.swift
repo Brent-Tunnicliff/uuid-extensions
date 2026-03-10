@@ -70,20 +70,24 @@ extension UserDefaultsDataStore {
                 userDefaults.set(value, forKey: key)
             }
 
-            // We need to manually call `synchronize()` on Linux and Windows platforms to make sure it saves.
-            // Decided to just do it for all so we don't miss any cases.
-            // But lets not block the current thread, this probably does not need to be immediate.
-            // <https://github.com/swiftlang/swift-corelibs-foundation/issues/4837#issuecomment-2726327549>
             Task {
                 await synchronize()
             }
         }
 
+        /// `FoundationEssentials` has
+        /// [a bug](https://github.com/swiftlang/swift-corelibs-foundation/issues/4837#issuecomment-2726327549)
+        /// where UserDefaults does not write to disk unless we call `synchronize()`manually.
+        ///
+        /// But lets not block the current thread, this probably does not need to be immediate.
+        /// For `Foundation` based platforms, we should be able to just let it handle syncing automatically so this function does nothing.
         @concurrent
         private func synchronize() async {
-            lock.withLock {
-                _ = userDefaults.synchronize()
-            }
+            #if canImport(FoundationEssentials)
+                lock.withLock {
+                    _ = userDefaults.synchronize()
+                }
+            #endif
         }
     }
 }
