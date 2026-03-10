@@ -1,13 +1,8 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
+import Foundation
 import Testing
 import UUIDMacro
-
-#if canImport(FoundationEssentials)
-    import FoundationEssentials
-#else
-    import Foundation
-#endif
 
 struct UUIDMacroTests {
     @Test

@@ -1,12 +1,6 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-#if canImport(Foundation)
-    public import Foundation
-#endif
-
-#if canImport(FoundationEssentials)
-    public import FoundationEssentials
-#endif
+public import Foundation
 
 // MARK: - UUIDGenerator
 

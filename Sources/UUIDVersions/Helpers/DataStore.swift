@@ -1,12 +1,6 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-#if canImport(Foundation)
-    import Foundation
-#endif
-
-#if canImport(FoundationEssentials)
-    import FoundationEssentials
-#endif
+import Foundation
 
 protocol DataStore: Sendable {
     var randomNode: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)? { get nonmutating set }
@@ -77,15 +71,15 @@ extension UserDefaultsDataStore {
             }
         }
 
-        /// `FoundationEssentials` has
-        /// [a bug](https://github.com/swiftlang/swift-corelibs-foundation/issues/4837#issuecomment-2726327549)
+        /// non-Darwin platforms have a
+        /// [bug](https://github.com/swiftlang/swift-corelibs-foundation/issues/4837#issuecomment-2726327549)
         /// where UserDefaults does not write to disk unless we call `synchronize()`manually.
         ///
         /// But lets not block the current thread, this probably does not need to be immediate.
-        /// For `Foundation` based platforms, we should be able to just let it handle syncing automatically so this function does nothing.
+        /// For Darwin based platforms, we should be able to just let it handle syncing automatically so this function does nothing.
         @concurrent
         private func synchronize() async {
-            #if canImport(FoundationEssentials)
+            #if !canImport(Darwin)
                 lock.withLock {
                     _ = userDefaults.synchronize()
                 }

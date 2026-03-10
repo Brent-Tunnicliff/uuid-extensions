@@ -1,12 +1,6 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-#if canImport(Foundation)
-    import Foundation
-#endif
-
-#if canImport(FoundationEssentials)
-    import FoundationEssentials
-#endif
+import Foundation
 
 protocol DateService: Hashable, Sendable {
     func now() -> Date

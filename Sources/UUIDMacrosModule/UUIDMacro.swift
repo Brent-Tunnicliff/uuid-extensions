@@ -1,14 +1,9 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
+import Foundation
 public import SwiftSyntax
 import SwiftSyntaxBuilder
 public import SwiftSyntaxMacros
-
-#if canImport(FoundationEssentials)
-    import FoundationEssentials
-#else
-    import Foundation
-#endif
 
 /// Macro for checking if uuid is valid at compile time and removing the usual optional.
 public struct UUIDMacro: ExpressionMacro {
