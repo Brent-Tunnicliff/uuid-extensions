@@ -2,7 +2,9 @@
 
 #if canImport(FoundationEssentials)
     import FoundationEssentials
-#else
+#endif
+
+#if canImport(Foundation)
     import Foundation
 #endif
 
