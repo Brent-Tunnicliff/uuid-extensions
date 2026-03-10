@@ -9,20 +9,6 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : {
-      "targets" : [
-        {
-          "containerPath" : "container:",
-          "identifier" : "UUIDMacro",
-          "name" : "UUIDMacro"
-        },
-        {
-          "containerPath" : "container:",
-          "identifier" : "UUIDVersions",
-          "name" : "UUIDVersions"
-        }
-      ]
-    },
     "defaultTestExecutionTimeAllowance" : 60,
     "testExecutionOrdering" : "random",
     "testTimeoutsEnabled" : true
