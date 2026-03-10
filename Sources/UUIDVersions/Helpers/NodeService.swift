@@ -22,26 +22,26 @@ struct DefaultNodeService: NodeService {
         getRandomNode()
     }
 
-    private let cache: any Cache
+    private let dataStore: any DataStore
     private let randomNumberGenerator: any RandomNumberGenerator
 
     private init() {
         self.init(
-            cache: .default,
+            dataStore: .default,
             randomNumberGenerator: .default
         )
     }
 
     init(
-        cache: any Cache,
+        dataStore: any DataStore,
         randomNumberGenerator: any RandomNumberGenerator
     ) {
-        self.cache = cache
+        self.dataStore = dataStore
         self.randomNumberGenerator = randomNumberGenerator
     }
 
     private func getRandomNode() -> (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8) {
-        if let cachedRandomNode = cache.randomNode {
+        if let cachedRandomNode = dataStore.randomNode {
             return cachedRandomNode
         }
 
@@ -57,7 +57,7 @@ struct DefaultNodeService: NodeService {
             generateByte(node: node, index: 5)
         )
 
-        cache.randomNode = newRandomNode
+        dataStore.randomNode = newRandomNode
         return newRandomNode
     }
 
