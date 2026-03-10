@@ -3,14 +3,15 @@
 // MARK: - UUIDVersion
 
 /// The [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562) version to use for generating UUID values.
-public struct UUIDVersion<Generator> where Generator: UUIDGenerator {
+public struct UUIDVersion {
     let value: Value
-    let generator: Generator
+    let generator: AnyUUIDGenerator
+
+    init(_ value: Value, generator: any UUIDGenerator) {
+        self.value = value
+        self.generator = AnyUUIDGenerator(wrapped: generator)
+    }
 }
-
-// MARK: Codable
-
-extension UUIDVersion: Codable {}
 
 // MARK: Hashable
 
@@ -33,6 +34,7 @@ extension UUIDVersion: Sendable {}
 
 extension UUIDVersion {
     enum Value: Int {
+        case v1 = 1
         case v4 = 4
     }
 }
@@ -40,10 +42,6 @@ extension UUIDVersion {
 // MARK: CaseIterable
 
 extension UUIDVersion.Value: CaseIterable {}
-
-// MARK: Codable
-
-extension UUIDVersion.Value: Codable {}
 
 // MARK: Hashable
 

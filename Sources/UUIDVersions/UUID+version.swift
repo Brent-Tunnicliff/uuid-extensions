@@ -8,7 +8,7 @@
 
 extension UUID {
     /// Creates a UUID of the specified version.
-    public init<Generator>(version: UUIDVersion<Generator>) {
+    public init(version: UUIDVersion) {
         self = version.generator.new()
     }
 }
