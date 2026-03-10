@@ -1,11 +1,11 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-#if canImport(FoundationEssentials)
-    import FoundationEssentials
-#endif
-
 #if canImport(Foundation)
     import Foundation
+#endif
+
+#if canImport(FoundationEssentials)
+    import FoundationEssentials
 #endif
 
 protocol DataStore: Sendable {
@@ -63,7 +63,7 @@ extension UserDefaultsDataStore {
 
         func getValue(forKey key: String) -> Any? {
             lock.withLock {
-                userDefaults.value(forKey: key)
+                userDefaults.object(forKey: key)
             }
         }
 

@@ -1,11 +1,11 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-#if canImport(FoundationEssentials)
-    import FoundationEssentials
-#endif
-
 #if canImport(Foundation)
     import Foundation
+#endif
+
+#if canImport(FoundationEssentials)
+    import FoundationEssentials
 #endif
 
 // MARK: - UUIDVersion

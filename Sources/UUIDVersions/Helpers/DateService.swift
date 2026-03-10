@@ -1,9 +1,11 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
+#if canImport(Foundation)
+    import Foundation
+#endif
+
 #if canImport(FoundationEssentials)
     import FoundationEssentials
-#else
-    import Foundation
 #endif
 
 protocol DateService: Hashable, Sendable {
