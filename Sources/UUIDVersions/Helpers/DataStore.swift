@@ -10,27 +10,10 @@ extension DataStore where Self == UserDefaultsDataStore {
     static var `default`: Self { .shared }
 }
 
-final class UserDefaultsDataStore: DataStore {
+final class UserDefaultsDataStore {
     static let shared = UserDefaultsDataStore()
 
     private let store: Store
-
-    private let randomNodeKey = UUID.randomNodeKey.uuidString
-    var randomNode: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)? {
-        get {
-            guard
-                let cachedValue = store.getValue(forKey: randomNodeKey),
-                let bytes = cachedValue as? (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
-            else {
-                return nil
-            }
-
-            return bytes
-        }
-        set {
-            store.set(newValue, forKey: randomNodeKey)
-        }
-    }
 
     private convenience init() {
         let suiteName = UUID.userDefaultsDataStoreSuiteName
@@ -43,6 +26,54 @@ final class UserDefaultsDataStore: DataStore {
 
     init(userDefaults: UserDefaults) {
         self.store = Store(userDefaults: userDefaults)
+    }
+}
+
+extension UserDefaultsDataStore: DataStore {
+    static var randomNodeKey: String { UUID.randomNodeKey.uuidString }
+    var randomNode: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)? {
+        get {
+            guard
+                let cachedValue = store.getValue(forKey: Self.randomNodeKey),
+                let data = cachedValue as? Data,
+                let wrappedValue = try? JSONDecoder().decode(WrappedRandomNodeValue.self, from: data)
+            else {
+                return nil
+            }
+
+            return wrappedValue.unwrapped
+        }
+        set {
+            let wrappedValue = WrappedRandomNodeValue(newValue)
+            let data = try? JSONEncoder().encode(wrappedValue)
+            store.set(data, forKey: Self.randomNodeKey)
+        }
+    }
+
+    struct WrappedRandomNodeValue: Codable {
+        let index0: UInt8
+        let index1: UInt8
+        let index2: UInt8
+        let index3: UInt8
+        let index4: UInt8
+        let index5: UInt8
+
+        var unwrapped: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8) {
+            (index0, index1, index2, index3, index4, index5)
+        }
+
+        init?(_ value: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)?) {
+            guard let value else {
+                return nil
+            }
+
+            self.index0 = value.0
+            self.index1 = value.1
+            self.index2 = value.2
+            self.index3 = value.3
+            self.index4 = value.4
+            self.index5 = value.5
+        }
     }
 }
 
