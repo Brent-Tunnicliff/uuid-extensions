@@ -15,12 +15,14 @@ extension UUIDVersion {
 final class VersionOneUUIDGenerator {
     private let dateService: any DateService
     private let nodeService: any NodeService
+    private let randomNumberGenerator: any RandomNumberGenerator
     private let state: State
 
     fileprivate convenience init() {
         self.init(
             dateService: .default,
             nodeService: .default,
+            randomNumberGenerator: .default,
             state: .shared
         )
     }
@@ -28,10 +30,12 @@ final class VersionOneUUIDGenerator {
     init(
         dateService: any DateService,
         nodeService: any NodeService,
+        randomNumberGenerator: any RandomNumberGenerator,
         state: State
     ) {
         self.dateService = dateService
         self.nodeService = nodeService
+        self.randomNumberGenerator = randomNumberGenerator
         self.state = state
     }
 }
@@ -65,8 +69,8 @@ extension VersionOneUUIDGenerator: UUIDGenerator {
 
         var clockSeqHi = UInt8((clockSequence >> 8) & 0x3F)
 
-        // RFC4122 variant
-        clockSeqHi |= 0x80
+        // Variant A
+        clockSeqHi |= randomNumberGenerator.variantA
 
         let clockSeqLow = UInt8(clockSequence & 0xFF)
         let node = nodeService.node
