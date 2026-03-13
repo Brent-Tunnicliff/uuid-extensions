@@ -27,6 +27,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-crypto.git", .upToNextMajor(from: "4.2.0")),
         .package(url: "https://github.com/Brent-Tunnicliff/swift-format-plugin", .upToNextMajor(from: "2.0.0")),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"),
     ],
@@ -56,7 +57,12 @@ let package = Package(
                 .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
             ]
         ),
-        .target(name: "UUIDVersions"),
+        .target(
+            name: "UUIDVersions",
+            dependencies: [
+                .product(name: "Crypto", package: "swift-crypto")
+            ]
+        ),
         .testTarget(
             name: "UUIDVersionsTests",
             dependencies: ["UUIDVersions"]

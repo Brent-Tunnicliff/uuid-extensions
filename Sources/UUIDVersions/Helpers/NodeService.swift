@@ -4,17 +4,11 @@
 protocol NodeService: Sendable {
     /// Returns a randomly generated node if the MAC Address is not available.
     ///
-    /// This value is persisted to disk.
+    /// This value is maintained in the DataStore.
     var node: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8) { get }
 }
 
-extension NodeService where Self == DefaultNodeService {
-    static var `default`: Self { .shared }
-}
-
 struct DefaultNodeService: NodeService {
-    static let shared = DefaultNodeService()
-
     // We should use the MAC Address and only fallback to random if there is none.
     // Technically we could get the MAC Address for macOS (and maybe linux?),
     // but given the complexity lets just do random for all platforms.
@@ -25,9 +19,9 @@ struct DefaultNodeService: NodeService {
     private let dataStore: any DataStore
     private let randomNumberGenerator: any RandomNumberGenerator
 
-    private init() {
+    init(dataStore: DataStoreType) {
         self.init(
-            dataStore: .default,
+            dataStore: dataStore.resolveDataStore(),
             randomNumberGenerator: .default
         )
     }
@@ -42,7 +36,7 @@ struct DefaultNodeService: NodeService {
 
     private func getRandomNode() -> (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8) {
         if let cachedRandomNode = dataStore.randomNode {
-            return cachedRandomNode
+            return cachedRandomNode.unwrapped
         }
 
         let node = randomNumberGenerator.int48
@@ -57,7 +51,7 @@ struct DefaultNodeService: NodeService {
             generateByte(node: node, index: 5)
         )
 
-        dataStore.randomNode = newRandomNode
+        dataStore.randomNode = WrappedRandomNodeValue(newRandomNode)
         return newRandomNode
     }
 

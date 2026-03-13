@@ -6,7 +6,25 @@ import Foundation
 
 extension UUIDVersion {
     /// [UUID version 1](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-1).
-    public static let v1 = UUIDVersion(.v1, generator: VersionOneUUIDGenerator())
+    ///
+    /// The MAC address is not being used to generate the due to
+    /// the complexity of getting that value across different platforms.
+    /// Sets the data store as persistent so relaunches can use the same random node.
+    ///
+    /// - Warning: Recommended to use ``v4`` instead if possible.
+    public static let v1 = v1(dataStore: .persistent)
+
+    /// [UUID version 1](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-1).
+    ///
+    /// The MAC address is not being used to generate the due to
+    /// the complexity of getting that value across different platforms.
+    ///
+    /// - Parameter dataStore: The type of data store to be used when generating the node for the UUID.
+    /// - Warning: Recommended to use ``v4`` instead if possible.
+    /// - Returns: ``UUIDVersion`` configured as `v1` and containing the input dataStore.
+    public static func v1(dataStore: DataStoreType) -> UUIDVersion {
+        UUIDVersion(.v1, generator: VersionOneUUIDGenerator(dataStore: dataStore))
+    }
 }
 
 // MARK: - VersionOneUUIDGenerator
@@ -18,10 +36,10 @@ final class VersionOneUUIDGenerator {
     private let randomNumberGenerator: any RandomNumberGenerator
     private let state: State
 
-    fileprivate convenience init() {
+    fileprivate convenience init(dataStore: DataStoreType) {
         self.init(
             dateService: .default,
-            nodeService: .default,
+            nodeService: DefaultNodeService(dataStore: dataStore),
             randomNumberGenerator: .default,
             state: .shared
         )
