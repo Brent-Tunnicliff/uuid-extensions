@@ -4,12 +4,19 @@ import Foundation
 import Testing
 @testable import UUIDVersions
 
-struct PersistentDataStoreTests {
-    @Test
-    func randomNode() throws {
+struct SecurePersistentDataStoreTests {
+    @Test(arguments: [true, false])
+    func randomNode(withAuthenticatedData: Bool) throws {
         let userDefaults = try #require(UserDefaults.forTest())
-        let dataStore = PersistentDataStore(userDefaults: userDefaults)
+        let key = SymmetricKey(size: .bits256)
+        let dataStore = SecurePersistentDataStore(
+            authenticatedData: withAuthenticatedData ? Data("test".utf8) : nil,
+            key: key,
+            userDefaults: userDefaults
+        )
+
         let originalValue = WrappedRandomNodeValue((0x01, 0x02, 0x03, 0x04, 0x05, 0x06))
+
         dataStore.randomNode = originalValue
 
         // We expect the value to be persisted.
