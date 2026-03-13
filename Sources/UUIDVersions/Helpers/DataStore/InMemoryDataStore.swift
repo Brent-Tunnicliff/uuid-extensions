@@ -27,6 +27,7 @@ extension InMemoryDataStore: Equatable {
 
 extension InMemoryDataStore: Hashable {
     func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
         hasher.combine(randomNode)
     }
 }
