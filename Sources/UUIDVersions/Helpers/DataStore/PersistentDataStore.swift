@@ -121,6 +121,7 @@ extension PersistentDataStore.Store: Equatable {
 
 extension PersistentDataStore.Store: Hashable {
     func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
         hasher.combine(lock)
         hasher.combine(userDefaults)
     }
