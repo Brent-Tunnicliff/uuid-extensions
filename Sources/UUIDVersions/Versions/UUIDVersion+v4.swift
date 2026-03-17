@@ -6,7 +6,7 @@ import Foundation
 
 extension UUIDVersion {
     /// [UUID version 4](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-4).
-    public static let v4 = UUIDVersion(.v4, generator: VersionFourUUIDGenerator())
+    public static let v4 = UUIDVersion(generator: VersionFourUUIDGenerator())
 }
 
 // MARK: - VersionFourUUIDGenerator

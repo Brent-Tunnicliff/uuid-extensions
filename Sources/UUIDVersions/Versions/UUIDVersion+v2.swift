@@ -24,7 +24,6 @@ extension UUIDVersion {
         localID: UInt32
     ) -> UUIDVersion {
         UUIDVersion(
-            .v2,
             generator: VersionTwoUUIDGenerator(
                 dataStore: dataStore,
                 domain: domain,

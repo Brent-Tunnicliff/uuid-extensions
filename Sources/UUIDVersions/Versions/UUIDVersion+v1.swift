@@ -20,7 +20,7 @@ extension UUIDVersion {
     /// - Parameter dataStore: The type of data store to be used when generating the node for the UUID.
     /// - Returns: ``UUIDVersion`` configured as `v1` and containing the input dataStore.
     public static func v1(dataStore: DataStoreType) -> UUIDVersion {
-        UUIDVersion(.v1, generator: VersionOneUUIDGenerator(dataStore: dataStore))
+        UUIDVersion(generator: VersionOneUUIDGenerator(dataStore: dataStore))
     }
 }
 
