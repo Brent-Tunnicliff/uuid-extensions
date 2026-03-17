@@ -63,9 +63,10 @@ extension VersionOneUUIDGenerator: UUIDGenerator {
         // UUID epoch offset (1582-10-15 → 1970-01-01) in 100ns units
         let uuidEpoch: UInt64 = 0x01_B2_1D_D2_13_81_40_00
 
-        // Handle clock rollback
         let now = dateService.now().timeIntervalSince1970
         let timestamp = UInt64(now * 10_000_000) + uuidEpoch
+
+        // Handle clock rollback
         let clockSequence = clockSequenceService.getClockSequence(timestamp: timestamp)
 
         let timeLow = UInt32(timestamp & 0xFF_FF_FF_FF)

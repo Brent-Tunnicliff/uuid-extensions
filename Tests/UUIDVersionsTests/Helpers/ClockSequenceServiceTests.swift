@@ -32,4 +32,16 @@ struct ClockSequenceServiceTests {
         let laterTimestamp = previousTimestamp + 100
         #expect(clockSequenceService.getClockSequence(timestamp: laterTimestamp) == expectedClockSequence)
     }
+
+    @Test
+    func customClockSequenceIncrement() {
+        let expectedClockSequence: UInt16 = 0x34C8
+        let earlierTimestamp = previousTimestamp - 100
+        #expect(
+            clockSequenceService.getClockSequence(
+                timestamp: earlierTimestamp,
+                clockSequenceIncrement: 0x0100
+            ) == expectedClockSequence
+        )
+    }
 }

@@ -31,15 +31,21 @@ final class ClockSequenceService {
 
     /// Retrieves the clock sequence.
     ///
-    /// - Parameter timestamp: The timestamp for determining if the clock was moved backwards.
-    /// If it is lower than the current cached value then the cached clock sequence is incremented before returning.
+    /// - Parameters:
+    ///   - timestamp: The timestamp for determining if the clock was moved backwards.
+    ///     If it is lower than the current cached value then the cached clock sequence is incremented before returning.
+    ///   - clockSequenceIncrement: The value to increment the clock sequence if the timestamp is
+    ///     lower than the previous cached value.
     /// - Returns: The cached clock sequence.
-    func getClockSequence(timestamp: UInt64) -> UInt16 {
+    func getClockSequence(
+        timestamp: UInt64,
+        clockSequenceIncrement: UInt16 = 1
+    ) -> UInt16 {
         lock.withLock {
             let clockSequence: UInt16
             if timestamp <= previousTimestamp {
                 // new time stamp is less than last time, so advance clock sequence to avoid possible collisions.
-                clockSequence = (self.clockSequence + 1) & 0x3FFF
+                clockSequence = (self.clockSequence + clockSequenceIncrement) & 0x3FFF
                 self.clockSequence = clockSequence
             } else {
                 clockSequence = self.clockSequence

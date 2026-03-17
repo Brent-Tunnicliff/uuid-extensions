@@ -4,8 +4,10 @@ import Foundation
 import Testing
 @testable import UUIDVersions
 
-@Suite("UUIDVersion+v1Tests")
-struct UUIDVersionV1Tests {
+@Suite("UUIDVersion+v2Tests")
+struct UUIDVersionV2Tests {
+    private let domain: UInt8 = 1
+    private let localID: UInt32 = 2
     private let mockDateService = MockDateService()
     private let mockNodeService = MockNodeService()
     private let mockRandomNumberGenerator = MockRandomNumberGenerator()
@@ -13,60 +15,68 @@ struct UUIDVersionV1Tests {
         clockSequence: 0x33C8,
         previousTimestamp: 0
     )
-    private let generator: VersionOneUUIDGenerator
+    private let generator: VersionTwoUUIDGenerator
 
     init() {
-        self.generator = VersionOneUUIDGenerator(
+        self.generator = VersionTwoUUIDGenerator(
             clockSequenceService: clockSequenceService,
             dateService: mockDateService,
+            domain: domain,
+            localID: localID,
             nodeService: mockNodeService,
             randomNumberGenerator: mockRandomNumberGenerator
         )
     }
 
-    // https://www.rfc-editor.org/rfc/rfc9562#name-example-of-a-uuidv1-value
     @Test
-    func matchesTheStandardExample() {
+    func matchesTheHardCodedResult() {
         let uuid = generator.new().uuidString
-        #expect(uuid == "C232AB00-9414-11EC-B3C8-9F6BDECED846")
+        #expect(uuid == "00000002-9414-21EC-B301-9F6BDECED846")
     }
 
     @Test
     func isValid() {
         for _ in 0..<1000 {
-            let uuid = UUID(version: .v1(dataStore: .inMemory)).uuidString.lowercased()
+            let version = UUIDVersion.v2(
+                dataStore: .inMemory,
+                domain: domain,
+                localID: localID
+            )
+            let uuid = UUID(version: version).uuidString.lowercased()
 
             // With the version and variant position we expect one of the following formats:
-            //  - xxxxxxxx-xxxx-1xxx-8xxx-xxxxxxxxxxxx
-            //  - xxxxxxxx-xxxx-1xxx-9xxx-xxxxxxxxxxxx
-            //  - xxxxxxxx-xxxx-1xxx-axxx-xxxxxxxxxxxx
-            //  - xxxxxxxx-xxxx-1xxx-bxxx-xxxxxxxxxxxx
-            let regex = /^[0-9a-f]{8}-[0-9a-f]{4}-1[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+            //  - xxxxxxxx-xxxx-2xxx-8xxx-xxxxxxxxxxxx
+            //  - xxxxxxxx-xxxx-2xxx-9xxx-xxxxxxxxxxxx
+            //  - xxxxxxxx-xxxx-2xxx-axxx-xxxxxxxxxxxx
+            //  - xxxxxxxx-xxxx-2xxx-bxxx-xxxxxxxxxxxx
+            let regex = /^[0-9a-f]{8}-[0-9a-f]{4}-2[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 
             #expect(
                 uuid.wholeMatch(of: regex) != nil,
-                "'\(uuid)' does not match the expected UUIDv1 regex pattern"
+                "'\(uuid)' does not match the expected UUIDv2 regex pattern"
             )
         }
     }
 
     @Test
     func advancesClockSequence() {
-        _ = generator.new()
+        let initialUUID = generator.new().uuidString
+        #expect(initialUUID == "00000002-9414-21EC-B301-9F6BDECED846")
 
         // We expect that the clock was advanced since the date has gone backwards since last use.
         mockDateService.store.value = mockDateService.store.value.addingTimeInterval(-10)
-        let uuid = generator.new().uuidString.lowercased()
-        // The main point we want to test is the value `b3c9`.
-        let regex = /^[0-9a-f]{8}-[0-9a-f]{4}-1[0-9a-f]{3}-b3c9-[0-9a-f]{12}$/
+        let advancedUUID = generator.new().uuidString.lowercased()
+
+        // We expect `B301` to change to `B401`
+        let regex = /^00000002-[0-9a-f]{4}-2[0-9a-f]{3}-b401-9f6bdeced846$/
         #expect(
-            uuid.wholeMatch(of: regex) != nil,
-            "'\(uuid)' did not advance the clockSequence as expected"
+            advancedUUID.wholeMatch(of: regex) != nil,
+            "'\(advancedUUID)' did not advance the clockSequence as expected"
         )
     }
 }
 
-extension UUIDVersionV1Tests {
+extension UUIDVersionV2Tests {
     fileprivate struct MockDateService: DateService {
         let store = DateValueStore()
 
@@ -94,7 +104,7 @@ extension UUIDVersionV1Tests {
             self._value = date
         }
 
-        static func == (lhs: UUIDVersionV1Tests.DateValueStore, rhs: UUIDVersionV1Tests.DateValueStore) -> Bool {
+        static func == (lhs: UUIDVersionV2Tests.DateValueStore, rhs: UUIDVersionV2Tests.DateValueStore) -> Bool {
             lhs.value == rhs.value
         }
 
