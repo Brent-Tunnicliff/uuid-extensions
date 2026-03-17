@@ -32,6 +32,9 @@ struct UUIDVersionV1Tests {
     }
 
     @Test
+    @available(iOS 16.0, *)
+    @available(tvOS 16.0, *)
+    @available(watchOS 9.0, *)
     func isValid() {
         for _ in 0..<1000 {
             let uuid = UUID(version: .v1(dataStore: .inMemory)).uuidString.lowercased()
@@ -51,6 +54,9 @@ struct UUIDVersionV1Tests {
     }
 
     @Test
+    @available(iOS 16.0, *)
+    @available(tvOS 16.0, *)
+    @available(watchOS 9.0, *)
     func advancesClockSequence() {
         _ = generator.new()
 
