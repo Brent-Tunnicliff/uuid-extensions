@@ -69,6 +69,6 @@ struct DefaultNodeServiceTests {
 extension DefaultNodeServiceTests {
     fileprivate struct MockRandomNumberGenerator: RandomNumberGenerator {
         let int48: UInt64
-        let variantA: UInt8 = 8
+        let variant: UInt8 = 0xb0
     }
 }

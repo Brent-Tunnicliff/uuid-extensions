@@ -70,13 +70,13 @@ extension VersionOneUUIDGenerator: UUIDGenerator {
         let timeLow = UInt32(timestamp & 0xFF_FF_FF_FF)
         let timeMid = UInt16((timestamp >> 32) & 0xFFFF)
         var timeHi = UInt16((timestamp >> 48) & 0x0FFF)
-        // version 1
+        // Version 1
         timeHi |= 0x1000
 
         var clockSeqHi = UInt8((clockSequence >> 8) & 0x3F)
 
-        // Variant A
-        clockSeqHi |= randomNumberGenerator.variantA
+        // Variant
+        clockSeqHi |= randomNumberGenerator.variant
 
         let clockSeqLow = UInt8(clockSequence & 0xFF)
         let node = nodeService.node

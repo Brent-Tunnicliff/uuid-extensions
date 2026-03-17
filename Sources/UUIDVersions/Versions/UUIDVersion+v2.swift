@@ -94,13 +94,13 @@ extension VersionTwoUUIDGenerator: UUIDGenerator {
 
         let timeMid = UInt16((timestamp >> 32) & 0xFFFF)
         var timeHi = UInt16((timestamp >> 48) & 0x0FFF)
-        // version 2
+        // Version 2
         timeHi |= 0x2000
 
         var clockSeqHi = UInt8((clockSequence >> 8) & 0x3F)
 
-        // Variant A
-        clockSeqHi |= randomNumberGenerator.variantA
+        // Variant
+        clockSeqHi |= randomNumberGenerator.variant
 
         let node = nodeService.node
 

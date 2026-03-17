@@ -24,7 +24,7 @@ struct UUIDVersionV1Tests {
         )
     }
 
-    // https://www.rfc-editor.org/rfc/rfc9562#name-example-of-a-uuidv1-value
+    // https://www.rfc-editor.org/rfc/rfc9562#appendix-A.1
     @Test
     func matchesTheStandardExample() {
         let uuid = generator.new().uuidString
@@ -115,6 +115,6 @@ extension UUIDVersionV1Tests {
 
     fileprivate struct MockRandomNumberGenerator: RandomNumberGenerator {
         let int48: UInt64 = 0x9E_6B_DE_CE_D8_46
-        let variantA: UInt8 = 0xb0
+        let variant: UInt8 = 0xb0
     }
 }

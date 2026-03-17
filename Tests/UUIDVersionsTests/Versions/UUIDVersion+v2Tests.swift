@@ -125,6 +125,6 @@ extension UUIDVersionV2Tests {
 
     fileprivate struct MockRandomNumberGenerator: RandomNumberGenerator {
         let int48: UInt64 = 0x9E_6B_DE_CE_D8_46
-        let variantA: UInt8 = 0xb0
+        let variant: UInt8 = 0xb0
     }
 }
