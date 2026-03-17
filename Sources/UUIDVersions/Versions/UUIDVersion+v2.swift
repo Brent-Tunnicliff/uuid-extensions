@@ -35,7 +35,6 @@ extension UUIDVersion {
 
 // MARK: - VersionTwoUUIDGenerator
 
-/// Used for generating [UUID version 2](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-2).
 final class VersionTwoUUIDGenerator {
     private let clockSequenceService: ClockSequenceService
     private let dateService: any DateService
@@ -79,7 +78,6 @@ final class VersionTwoUUIDGenerator {
 // MARK: UUIDGenerator
 
 extension VersionTwoUUIDGenerator: UUIDGenerator {
-    /// Generated a new UUID of version 1.
     func new() -> UUID {
         // UUID epoch offset (1582-10-15 → 1970-01-01) in 100ns units
         let uuidEpoch: UInt64 = 0x01_B2_1D_D2_13_81_40_00
