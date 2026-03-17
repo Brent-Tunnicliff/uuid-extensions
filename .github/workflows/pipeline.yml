@@ -17,9 +17,6 @@ jobs:
           { platform: "tvOS", simulator_version: "26.2" },
           { platform: "watchOS", simulator_version: "26.2" },
           { platform: "visionOS", simulator_version: "26.2" },
-
-          # macOS runs on the host and doesn't need a simulator.
-          { platform: "macOS", simulator_version: "" }
         ]
     uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/xcodebuild.yml@v2
     with:
@@ -29,9 +26,10 @@ jobs:
       simulator_version: "${{ matrix.target.simulator_version }}"
       xcode_path: "/Applications/Xcode_26.3.app"
 
-  # Macro tests can not be run on any simulator target, so easier to split into its own job.
-  macros_xcodebuild:
+  # Macro tests can not be run on any simulator target, so easier to split macOS into its own job.
+  package_xcodebuild_macos:
     uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/xcodebuild.yml@v2
+    name: "package_xcodebuild (macOS)"
     with:
       platform: "macOS"
       runs_on: "macos-26"
