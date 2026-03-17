@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  package_xcodebuild:
+  xcodebuild:
     strategy:
       # Don't cancel the other matrix values if one fails.
       fail-fast: false
@@ -27,16 +27,16 @@ jobs:
       xcode_path: "/Applications/Xcode_26.3.app"
 
   # Macro tests can not be run on any simulator target, so easier to split macOS into its own job.
-  package_xcodebuild_macos:
+  xcodebuild_macos:
     uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/xcodebuild.yml@v2
-    name: "package_xcodebuild (macOS)"
+    name: "xcodebuild (macOS)"
     with:
       platform: "macOS"
       runs_on: "macos-26"
       scheme: "swift-uuid"
       xcode_path: "/Applications/Xcode_26.3.app"
 
-  package_swift:
+  swift:
     strategy:
       # Don't cancel the other matrix values if one fails.
       fail-fast: false
