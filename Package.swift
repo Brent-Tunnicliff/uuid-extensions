@@ -29,7 +29,7 @@ let package = Package(
         .library(
             name: "UUIDExtensions",
             targets: ["UUIDExtensions"]
-        ),
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-crypto.git", .upToNextMajor(from: "4.2.0")),
@@ -68,7 +68,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
             ]
-        )
+        ),
     ]
 )
 
@@ -88,10 +88,6 @@ for target in package.targets where target.type != .plugin {
     // MARK: Swift compliler settings
 
     let commonSwiftSettings: [PackageDescription.SwiftSetting] = [
-        // Optional: Set defaultIsolation to `MainActor` if desired.
-        // Probably only useful in a UI heavy package.
-        // .defaultIsolation(MainActor.self),
-
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InferIsolatedConformances"),
         .enableUpcomingFeature("InternalImportsByDefault"),
