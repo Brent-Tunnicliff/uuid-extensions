@@ -13,7 +13,10 @@ struct DefaultNodeServiceTests {
     private let expectedNode = (0x9F, 0x6B, 0xDE, 0xCE, 0xD8, 0x46)
 
     init() {
-        self.mockRandomNumberGenerator = MockRandomNumberGenerator(int48: randomValue)
+        self.mockRandomNumberGenerator = MockRandomNumberGenerator(
+            int48: randomValue,
+            variant: 0xb0
+        )
         self.nodeService = DefaultNodeService(
             dataStore: dataStore,
             randomNumberGenerator: mockRandomNumberGenerator
@@ -63,12 +66,5 @@ struct DefaultNodeServiceTests {
         #expect(node.3 == expectedCachedNode.3)
         #expect(node.4 == expectedCachedNode.4)
         #expect(node.5 == expectedCachedNode.5)
-    }
-}
-
-extension DefaultNodeServiceTests {
-    fileprivate struct MockRandomNumberGenerator: RandomNumberGenerator {
-        let int48: UInt64
-        let variant: UInt8 = 0xb0
     }
 }

@@ -10,7 +10,10 @@ struct UUIDVersionV2Tests {
     private let localID: UInt32 = 2
     private let mockDateService = MockDateService()
     private let mockNodeService = MockNodeService()
-    private let mockRandomNumberGenerator = MockRandomNumberGenerator()
+    private let mockRandomNumberGenerator = MockRandomNumberGenerator(
+        int48: 0x9E_6B_DE_CE_D8_46,
+        variant: 0xb0
+    )
     private let clockSequenceService = ClockSequenceService(
         clockSequence: 0x33C8,
         previousTimestamp: 0
@@ -70,7 +73,7 @@ struct UUIDVersionV2Tests {
         #expect(initialUUID == "00000002-9414-21EC-B301-9F6BDECED846")
 
         // We expect that the clock was advanced since the date has gone backwards since last use.
-        mockDateService.store.value = mockDateService.store.value.addingTimeInterval(-10)
+        mockDateService.nowValue = mockDateService.nowValue.addingTimeInterval(-10)
         let advancedUUID = generator.new().uuidString.lowercased()
 
         // We expect `B301` to change to `B401`
@@ -83,48 +86,7 @@ struct UUIDVersionV2Tests {
 }
 
 extension UUIDVersionV2Tests {
-    fileprivate struct MockDateService: DateService {
-        let store = DateValueStore()
-
-        func now() -> Date {
-            store.value
-        }
-    }
-
-    fileprivate final class DateValueStore: @unchecked Sendable, Hashable {
-        private let lock = NSLock()
-
-        var _value: Date
-        var value: Date {
-            get { lock.withLock { _value } }
-            set { lock.withLock { _value = newValue } }
-        }
-
-        init() {
-            // Example date from [Appendix A. Test Vectors](https://www.rfc-editor.org/rfc/rfc9562#name-test-vectors).
-            let exampleDate = "2022-02-22T19:22:22Z"
-            guard let date = ISO8601DateFormatter().date(from: exampleDate) else {
-                preconditionFailure("Unable to convert to date: \(exampleDate)")
-            }
-
-            self._value = date
-        }
-
-        static func == (lhs: UUIDVersionV2Tests.DateValueStore, rhs: UUIDVersionV2Tests.DateValueStore) -> Bool {
-            lhs.value == rhs.value
-        }
-
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(value)
-        }
-    }
-
     fileprivate struct MockNodeService: NodeService {
         let node: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8) = (0x9F, 0x6B, 0xDE, 0xCE, 0xD8, 0x46)
-    }
-
-    fileprivate struct MockRandomNumberGenerator: RandomNumberGenerator {
-        let int48: UInt64 = 0x9E_6B_DE_CE_D8_46
-        let variant: UInt8 = 0xb0
     }
 }
