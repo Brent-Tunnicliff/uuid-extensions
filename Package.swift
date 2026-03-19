@@ -40,7 +40,7 @@ let package = Package(
         .target(
             name: "UUIDExtensions",
             dependencies: [
-                .targetItem(name: "UUIDMacros", condition: macroDependencyCondition),
+                "UUIDMacros",
                 .product(name: "Crypto", package: "swift-crypto"),
             ]
         ),
