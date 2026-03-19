@@ -9,7 +9,7 @@ extension UUIDVersion {
     /// [UUID version 3](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-3).
     ///
     /// The value is generated based on the namespace and name inputs and not time or random data.
-    /// If you inout the same values later you get the same UUID.
+    /// If you input the same values later you get the same UUID.
     ///
     /// - Parameters:
     ///    - namespace: Namespace to use for generating the UUID.

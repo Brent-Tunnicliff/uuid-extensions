@@ -2,10 +2,10 @@
 
 import Foundation
 import Testing
-import UUIDVersions
+import UUIDExtensions
 
-@Suite("UUID+Constants")
-struct UUIDConstants {
+@Suite("UUID+ConstantsTests")
+struct UUIDConstantsTests {
     @Test
     func `nil`() {
         #expect(UUID.nil.uuidString == "00000000-0000-0000-0000-000000000000")

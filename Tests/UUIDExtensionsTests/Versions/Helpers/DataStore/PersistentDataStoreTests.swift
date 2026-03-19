@@ -2,17 +2,22 @@
 
 import Foundation
 import Testing
-@testable import UUIDVersions
+@testable import UUIDExtensions
 
-struct InMemoryDataStoreTests {
+struct PersistentDataStoreTests {
     @Test
     func randomNode() throws {
-        let dataStore = InMemoryDataStore()
+        let userDefaults = try #require(UserDefaults.forTest())
+        let dataStore = PersistentDataStore(userDefaults: userDefaults)
         let originalValue = WrappedRandomNodeValue((0x01, 0x02, 0x03, 0x04, 0x05, 0x06))
-
         dataStore.randomNode = originalValue
+
+        // We expect the value to be persisted.
+        _ = try #require(userDefaults.object(forKey: PersistentDataStore.randomNodeKey))
 
         // Calling the get again returns the same value.
         #expect(dataStore.randomNode == originalValue)
+
+        userDefaults.tearDown()
     }
 }

@@ -2,7 +2,7 @@
 
 import Foundation
 import Testing
-@testable import UUIDVersions
+@testable import UUIDExtensions
 
 @Suite("UUIDVersion+v2Tests")
 struct UUIDVersionV2Tests {

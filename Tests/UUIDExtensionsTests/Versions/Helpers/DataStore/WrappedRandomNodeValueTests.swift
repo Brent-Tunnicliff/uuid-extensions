@@ -2,7 +2,7 @@
 
 import Foundation
 import Testing
-@testable import UUIDVersions
+@testable import UUIDExtensions
 
 struct WrappedRandomNodeValueTests {
     @Test

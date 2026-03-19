@@ -6,4 +6,4 @@ public import Foundation
 ///
 /// - Parameter value: static string to be used for creating the uuid. If not a valid uuid then a compile error is thrown.
 @freestanding(expression)
-public macro uuid(_ value: StaticString) -> UUID = #externalMacro(module: "UUIDMacrosModule", type: "UUIDMacro")
+public macro uuid(_ value: StaticString) -> UUID = #externalMacro(module: "UUIDMacros", type: "UUIDMacro")

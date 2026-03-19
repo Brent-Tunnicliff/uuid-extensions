@@ -27,11 +27,7 @@ public struct UUIDMacro: ExpressionMacro {
         }
 
         // Force unwrapping should be safe because the build would have failed if this returned nil.
-        #if canImport(FoundationEssentials)
-            return "FoundationEssentials.UUID(uuidString: \(argument))!"
-        #elseif canImport(Foundation)
-            return "Foundation.UUID(uuidString: \(argument))!"
-        #endif
+        return "Foundation.UUID(uuidString: \(argument))!"
     }
 }
 

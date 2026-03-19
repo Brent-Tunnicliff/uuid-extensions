@@ -7,8 +7,17 @@ import PackageDescription
 
 // MARK: - Package
 
+// The macro targets can only build on the actual machine you develop with which should be macOS, linux or Windows.
+let macroDependencyCondition = TargetDependencyCondition.when(
+    platforms: [
+        .macOS,
+        .linux,
+        .windows,
+    ]
+)
+
 let package = Package(
-    name: "swift-uuid",
+    name: "uuid-extensions",
     platforms: [
         .iOS(.v13),
         .macCatalyst(.v13),
@@ -18,12 +27,8 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "UUIDMacro",
-            targets: ["UUIDMacro"]
-        ),
-        .library(
-            name: "UUIDVersions",
-            targets: ["UUIDVersions"]
+            name: "UUIDExtensions",
+            targets: ["UUIDExtensions"]
         ),
     ],
     dependencies: [
@@ -33,40 +38,37 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "UUIDMacro",
-            dependencies: ["UUIDMacrosModule"]
-        ),
-        .testTarget(
-            name: "UUIDMacroTests",
-            dependencies: ["UUIDMacro"]
-        ),
-        .macro(
-            name: "UUIDMacrosModule",
+            name: "UUIDExtensions",
             dependencies: [
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-                .product(name: "SwiftSyntax", package: "swift-syntax"),
-                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .targetItem(name: "UUIDMacros", condition: macroDependencyCondition),
+                .product(name: "Crypto", package: "swift-crypto"),
             ]
         ),
         .testTarget(
-            name: "UUIDMacrosModuleTests",
+            name: "UUIDExtensionsTests",
             dependencies: [
-                "UUIDMacrosModule",
+                "UUIDExtensions",
+                // Only adding UUIDMacros so we can check if it is importable for the macro test.
+                .targetItem(name: "UUIDMacros", condition: macroDependencyCondition),
+            ]
+        ),
+        .macro(
+            name: "UUIDMacros",
+            dependencies: [
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax", condition: macroDependencyCondition),
+                .product(name: "SwiftSyntax", package: "swift-syntax", condition: macroDependencyCondition),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax", condition: macroDependencyCondition),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax", condition: macroDependencyCondition),
+            ]
+        ),
+        .testTarget(
+            name: "UUIDMacrosTests",
+            dependencies: [
+                .targetItem(name: "UUIDMacros", condition: macroDependencyCondition),
                 .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
             ]
-        ),
-        .target(
-            name: "UUIDVersions",
-            dependencies: [
-                .product(name: "Crypto", package: "swift-crypto")
-            ]
-        ),
-        .testTarget(
-            name: "UUIDVersionsTests",
-            dependencies: ["UUIDVersions"]
-        ),
+        )
     ]
 )
 
