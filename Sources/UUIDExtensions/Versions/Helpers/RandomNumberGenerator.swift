@@ -7,7 +7,7 @@ protocol RandomNumberGenerator: Sendable {
     /// Returns a random 48 bit number.
     var int48: UInt64 { get }
 
-    /// Returns a random value for [Variant](https://www.rfc-editor.org/rfc/rfc9562#name-variant-field) (8,9,A,B).
+    /// Returns a random value for [Variant](https://www.rfc-editor.org/rfc/rfc9562#name-variant-field).
     var variant: UInt8 { get }
 }
 
@@ -27,7 +27,9 @@ struct DefaultRandomNumberGenerator: RandomNumberGenerator {
     }
 
     var variant: UInt8 {
-        UInt8.random(in: 0x80...0xb0)
+        let values: [UInt8] = [0x80, 0x90, 0xa0, 0xb0]
+        let index = Int.random(in: 0..<values.count)
+        return values[index]
     }
 
     private init() {}
