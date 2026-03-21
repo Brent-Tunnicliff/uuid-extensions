@@ -47,23 +47,6 @@ extension PersistentDataStore: DataStore {
     }
 }
 
-// MARK: Equatable
-
-extension PersistentDataStore: Equatable {
-    static func == (lhs: PersistentDataStore, rhs: PersistentDataStore) -> Bool {
-        lhs.store == rhs.store
-    }
-}
-
-// MARK: Hashable
-
-extension PersistentDataStore: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
-        hasher.combine(store)
-    }
-}
-
 // MARK: - PersistentDataStore.Store
 
 extension PersistentDataStore {
@@ -105,25 +88,6 @@ extension PersistentDataStore {
                 }
             #endif
         }
-    }
-}
-
-// MARK: Equatable
-
-extension PersistentDataStore.Store: Equatable {
-    static func == (lhs: PersistentDataStore.Store, rhs: PersistentDataStore.Store) -> Bool {
-        // Consider them equal if they are wrapping the same UserDefaults source.
-        lhs.userDefaults == rhs.userDefaults
-    }
-}
-
-// MARK: Hashable
-
-extension PersistentDataStore.Store: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
-        hasher.combine(lock)
-        hasher.combine(userDefaults)
     }
 }
 

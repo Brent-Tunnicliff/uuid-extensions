@@ -8,8 +8,9 @@ public import Foundation
 extension UUIDVersion {
     /// [UUID version 5](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-5).
     ///
-    /// The value is generated based on the namespace and name inputs and not time or random data.
+    /// The value is generated based on the namespace and name inputs.
     /// If you input the same values later you get the same UUID.
+    /// Same structure as ``v3``, but uses SHA-1 to hash the inputs.
     ///
     /// - Parameters:
     ///    - namespace: Namespace to use for generating the UUID.

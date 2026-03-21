@@ -2,7 +2,7 @@
 
 import Foundation
 
-protocol DateService: Hashable, Sendable {
+protocol DateService: Sendable {
     func now() -> Date
 }
 

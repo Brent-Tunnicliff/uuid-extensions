@@ -2,14 +2,12 @@
 
 public import Foundation
 
-/// Type erased UUIDGenerator to avoid needing complicated generics.
+/// Type erased UUIDGenerator.
 public struct AnyUUIDGenerator {
-    private let wrappedId: @Sendable () -> ID
-    private let wrappedNew: @Sendable () -> UUID
+    private let wrapped: any UUIDGenerator
 
     init(wrapped: any UUIDGenerator) {
-        self.wrappedId = { wrapped.id }
-        self.wrappedNew = { wrapped.new() }
+        self.wrapped = wrapped
     }
 }
 
@@ -18,12 +16,12 @@ public struct AnyUUIDGenerator {
 extension AnyUUIDGenerator: UUIDGenerator {
     /// Returns the id of the wrapped generator.
     public var id: ID {
-        wrappedId()
+        wrapped.id
     }
 
     /// Creates a new UUID from the wrapped generator.
     public func new() -> UUID {
-        wrappedNew()
+        wrapped.new()
     }
 }
 

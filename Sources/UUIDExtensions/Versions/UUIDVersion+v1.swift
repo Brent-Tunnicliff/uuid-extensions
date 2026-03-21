@@ -7,14 +7,16 @@ import Foundation
 extension UUIDVersion {
     /// [UUID version 1](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-1).
     ///
-    /// The MAC address is not being used to generate the due to
+    /// Generates using the current system time and a node of random values.
+    /// Typically the node is the MAC address of the machine, but it is not being used here due to
     /// the complexity of getting that value across different platforms.
     /// Sets the data store as persistent so relaunches can use the same random node.
     public static let v1 = v1(dataStore: .persistent)
 
     /// [UUID version 1](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-1).
     ///
-    /// The MAC address is not being used to generate the due to
+    /// Generates using the current system time and a node of random values.
+    /// Typically the node is the MAC address of the machine, but it is not being used here due to
     /// the complexity of getting that value across different platforms.
     ///
     /// - Parameter dataStore: The type of data store to be used when generating the node for the UUID.
@@ -110,5 +112,13 @@ extension VersionOneUUIDGenerator: UUIDGenerator {
                 node.5,
             )
         )
+    }
+
+    static func == (lhs: VersionOneUUIDGenerator, rhs: some UUIDGenerator) -> Bool {
+        guard let rhs = rhs as? VersionOneUUIDGenerator else {
+            return false
+        }
+
+        return lhs === rhs
     }
 }

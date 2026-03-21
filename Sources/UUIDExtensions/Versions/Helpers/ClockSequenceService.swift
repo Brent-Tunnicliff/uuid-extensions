@@ -15,8 +15,9 @@ final class ClockSequenceService {
     private var previousTimestamp: UInt64 = 0
 
     convenience init() {
+        let randomNumberGenerator: any RandomNumberGenerator = .default
         self.init(
-            clockSequence: UInt16.random(in: 0..<16384),
+            clockSequence: randomNumberGenerator.clockSequence,
             previousTimestamp: 0
         )
     }

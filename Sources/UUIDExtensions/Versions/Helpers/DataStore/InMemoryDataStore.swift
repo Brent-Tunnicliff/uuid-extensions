@@ -15,23 +15,6 @@ final class InMemoryDataStore: DataStore {
     }
 }
 
-// MARK: Equatable
-
-extension InMemoryDataStore: Equatable {
-    static func == (lhs: InMemoryDataStore, rhs: InMemoryDataStore) -> Bool {
-        lhs.randomNode == rhs.randomNode
-    }
-}
-
-// MARK: Hashable
-
-extension InMemoryDataStore: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
-        hasher.combine(randomNode)
-    }
-}
-
 // MARK: Sendable
 
 // Not using `Synchronization` so we can keep the minimum OS versions as low as possible.

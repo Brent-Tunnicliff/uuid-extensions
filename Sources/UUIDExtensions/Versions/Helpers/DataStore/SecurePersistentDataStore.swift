@@ -96,13 +96,3 @@ extension SecurePersistentDataStore: DataStore {
         case unableToGetSealedBoxCombinedData
     }
 }
-
-// MARK: Hashable
-
-extension SecurePersistentDataStore: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(authenticatedData)
-        hasher.combine(key)
-        hasher.combine(store)
-    }
-}

@@ -1,6 +1,9 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
 protocol RandomNumberGenerator: Sendable {
+    /// Returns a new valid clock sequence number.
+    var clockSequence: UInt16 { get }
+
     /// Returns a random 48 bit number.
     var int48: UInt64 { get }
 
@@ -14,6 +17,10 @@ extension RandomNumberGenerator where Self == DefaultRandomNumberGenerator {
 
 struct DefaultRandomNumberGenerator: RandomNumberGenerator {
     static let shared = DefaultRandomNumberGenerator()
+
+    var clockSequence: UInt16 {
+        UInt16.random(in: 0..<16384)
+    }
 
     var int48: UInt64 {
         UInt64.random(in: 0..<(1 << 48))
