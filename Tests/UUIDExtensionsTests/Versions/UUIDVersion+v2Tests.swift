@@ -24,6 +24,7 @@ struct UUIDVersionV2Tests {
         self.generator = VersionTwoUUIDGenerator(
             clockSequenceService: clockSequenceService,
             dateService: mockDateService,
+            dataStoreType: .inMemory,
             domain: domain,
             localID: localID,
             nodeService: mockNodeService,

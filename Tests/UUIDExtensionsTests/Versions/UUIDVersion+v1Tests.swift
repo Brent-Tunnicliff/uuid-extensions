@@ -22,12 +22,13 @@ struct UUIDVersionV1Tests {
         self.generator = VersionOneUUIDGenerator(
             clockSequenceService: clockSequenceService,
             dateService: mockDateService,
+            dataStoreType: .inMemory,
             nodeService: mockNodeService,
             randomNumberGenerator: mockRandomNumberGenerator
         )
     }
 
-    // https://www.rfc-editor.org/rfc/rfc9562#appendix-A.1
+    // https://www.rfc-editor.org/rfc/rfc9562#name-example-of-a-uuidv1-value
     @Test
     func matchesTheStandardExample() {
         let uuid = generator.new().uuidString

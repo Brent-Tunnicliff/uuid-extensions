@@ -11,17 +11,20 @@ extension UUIDVersion {
     /// Also we are following the recommendation to use a new random node and clock sequence for each UUID generated.
     ///
     /// - Warning: Recommended to use ``v7`` if possible.
-    public static let v6 = UUIDVersion(generator: VersionSixUUIDGenerator())
+    public static var v6: UUIDVersion {
+        UUIDVersion(generator: VersionSixUUIDGenerator())
+    }
 }
 
 // MARK: - VersionOneUUIDGenerator
 
-final class VersionSixUUIDGenerator {
+struct VersionSixUUIDGenerator {
+    let id = 6
     private let dateService: any DateService
     private let nodeService: any NodeService
     private let randomNumberGenerator: any RandomNumberGenerator
 
-    fileprivate convenience init() {
+    fileprivate init() {
         self.init(
             dateService: .default,
             nodeService: DefaultNodeService(dataStore: nil),
@@ -37,6 +40,23 @@ final class VersionSixUUIDGenerator {
         self.dateService = dateService
         self.nodeService = nodeService
         self.randomNumberGenerator = randomNumberGenerator
+    }
+}
+
+// MARK: - Equatable
+
+extension VersionSixUUIDGenerator: Equatable {
+    static func == (lhs: VersionSixUUIDGenerator, rhs: VersionSixUUIDGenerator) -> Bool {
+        // Only public access is via the `static var v6`, so should alway be the same value.
+        true
+    }
+}
+
+// MARK: - Hashable
+
+extension VersionSixUUIDGenerator: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }
 

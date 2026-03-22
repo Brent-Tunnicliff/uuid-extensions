@@ -37,7 +37,7 @@ extension DataStoreType {
         case .inMemory:
             InMemoryDataStore.shared
         case .persistent:
-            PersistentDataStore.shared
+            PersistentDataStore()
         case let .securePersistent(key, authenticatedData):
             SecurePersistentDataStore(authenticatedData: authenticatedData, key: key)
         }

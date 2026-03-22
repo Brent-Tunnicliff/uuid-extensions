@@ -34,12 +34,13 @@ extension UUIDVersion {
 
 // MARK: - VersionThreeUUIDGenerator
 
-final class VersionThreeUUIDGenerator {
+struct VersionThreeUUIDGenerator {
+    let id = 3
     private let name: String
     private let namespace: UUID
     private let randomNumberGenerator: any RandomNumberGenerator
 
-    fileprivate convenience init(
+    fileprivate init(
         name: String,
         namespace: UUID
     ) {
@@ -58,6 +59,25 @@ final class VersionThreeUUIDGenerator {
         self.namespace = namespace
         self.name = name
         self.randomNumberGenerator = randomNumberGenerator
+    }
+}
+
+// MARK: - Equatable
+
+extension VersionThreeUUIDGenerator: Equatable {
+    static func == (lhs: VersionThreeUUIDGenerator, rhs: VersionThreeUUIDGenerator) -> Bool {
+        lhs.namespace == rhs.namespace
+            && lhs.name == rhs.name
+    }
+}
+
+// MARK: - Hashable
+
+extension VersionThreeUUIDGenerator: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(name)
+        hasher.combine(namespace)
     }
 }
 

@@ -7,14 +7,12 @@ protocol DateService: Sendable {
 }
 
 extension DateService where Self == SystemDateService {
-    static var `default`: Self { .shared }
+    static var `default`: Self {
+        SystemDateService()
+    }
 }
 
 struct SystemDateService: DateService {
-    static let shared = SystemDateService()
-
-    private init() {}
-
     func now() -> Date {
         Date()
     }

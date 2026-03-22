@@ -12,12 +12,12 @@ protocol RandomNumberGenerator: Sendable {
 }
 
 extension RandomNumberGenerator where Self == DefaultRandomNumberGenerator {
-    static var `default`: Self { .shared }
+    static var `default`: Self {
+        DefaultRandomNumberGenerator()
+    }
 }
 
 struct DefaultRandomNumberGenerator: RandomNumberGenerator {
-    static let shared = DefaultRandomNumberGenerator()
-
     var clockSequence: UInt16 {
         UInt16.random(in: 0..<16384)
     }
@@ -31,6 +31,4 @@ struct DefaultRandomNumberGenerator: RandomNumberGenerator {
         let index = Int.random(in: 0..<values.count)
         return values[index]
     }
-
-    private init() {}
 }

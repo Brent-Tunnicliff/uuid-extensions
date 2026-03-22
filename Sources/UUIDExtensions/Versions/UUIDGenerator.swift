@@ -3,7 +3,7 @@
 public import Foundation
 
 /// Generator of UUIDs.
-public protocol UUIDGenerator: Identifiable, Sendable where ID == ObjectIdentifier {
+public protocol UUIDGenerator: Hashable, Identifiable, Sendable where ID == Int {
     /// Creates a new instance of UUID.
     func new() -> UUID
 }

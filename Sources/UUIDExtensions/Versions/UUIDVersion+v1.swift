@@ -11,7 +11,9 @@ extension UUIDVersion {
     /// Typically the node is the MAC address of the machine, but it is not being used here due to
     /// the complexity of getting that value across different platforms.
     /// Sets the data store as persistent so relaunches can use the same random node.
-    public static let v1 = v1(dataStore: .persistent)
+    public static var v1: UUIDVersion {
+        v1(dataStore: .persistent)
+    }
 
     /// [UUID version 1](https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-1).
     ///
@@ -28,16 +30,19 @@ extension UUIDVersion {
 
 // MARK: - VersionOneUUIDGenerator
 
-final class VersionOneUUIDGenerator {
+struct VersionOneUUIDGenerator {
+    let id = 1
     private let clockSequenceService: ClockSequenceService
     private let dateService: any DateService
+    private let dataStoreType: DataStoreType
     private let nodeService: any NodeService
     private let randomNumberGenerator: any RandomNumberGenerator
 
-    fileprivate convenience init(dataStore: DataStoreType) {
+    fileprivate init(dataStore: DataStoreType) {
         self.init(
             clockSequenceService: .shared,
             dateService: .default,
+            dataStoreType: dataStore,
             nodeService: DefaultNodeService(dataStore: dataStore),
             randomNumberGenerator: .default,
         )
@@ -46,13 +51,32 @@ final class VersionOneUUIDGenerator {
     init(
         clockSequenceService: ClockSequenceService,
         dateService: any DateService,
+        dataStoreType: DataStoreType,
         nodeService: any NodeService,
         randomNumberGenerator: any RandomNumberGenerator
     ) {
         self.dateService = dateService
+        self.dataStoreType = dataStoreType
         self.nodeService = nodeService
         self.randomNumberGenerator = randomNumberGenerator
         self.clockSequenceService = clockSequenceService
+    }
+}
+
+// MARK: - Equatable
+
+extension VersionOneUUIDGenerator: Equatable {
+    static func == (lhs: VersionOneUUIDGenerator, rhs: VersionOneUUIDGenerator) -> Bool {
+        lhs.dataStoreType == rhs.dataStoreType
+    }
+}
+
+// MARK: - Hashable
+
+extension VersionOneUUIDGenerator: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(dataStoreType)
+        hasher.combine(id)
     }
 }
 
@@ -112,13 +136,5 @@ extension VersionOneUUIDGenerator: UUIDGenerator {
                 node.5,
             )
         )
-    }
-
-    static func == (lhs: VersionOneUUIDGenerator, rhs: some UUIDGenerator) -> Bool {
-        guard let rhs = rhs as? VersionOneUUIDGenerator else {
-            return false
-        }
-
-        return lhs === rhs
     }
 }

@@ -35,15 +35,17 @@ extension UUIDVersion {
 
 // MARK: - VersionTwoUUIDGenerator
 
-final class VersionTwoUUIDGenerator {
+struct VersionTwoUUIDGenerator {
+    let id = 2
     private let clockSequenceService: ClockSequenceService
     private let dateService: any DateService
+    private let dataStoreType: DataStoreType
     private let domain: UInt8
     private let localID: UInt32
     private let nodeService: any NodeService
     private let randomNumberGenerator: any RandomNumberGenerator
 
-    fileprivate convenience init(
+    fileprivate init(
         dataStore: DataStoreType,
         domain: UInt8,
         localID: UInt32
@@ -51,6 +53,7 @@ final class VersionTwoUUIDGenerator {
         self.init(
             clockSequenceService: .shared,
             dateService: .default,
+            dataStoreType: dataStore,
             domain: domain,
             localID: localID,
             nodeService: DefaultNodeService(dataStore: dataStore),
@@ -61,6 +64,7 @@ final class VersionTwoUUIDGenerator {
     init(
         clockSequenceService: ClockSequenceService,
         dateService: any DateService,
+        dataStoreType: DataStoreType,
         domain: UInt8,
         localID: UInt32,
         nodeService: any NodeService,
@@ -68,10 +72,32 @@ final class VersionTwoUUIDGenerator {
     ) {
         self.clockSequenceService = clockSequenceService
         self.dateService = dateService
+        self.dataStoreType = dataStoreType
         self.domain = domain
         self.localID = localID
         self.nodeService = nodeService
         self.randomNumberGenerator = randomNumberGenerator
+    }
+}
+
+// MARK: - Equatable
+
+extension VersionTwoUUIDGenerator: Equatable {
+    static func == (lhs: VersionTwoUUIDGenerator, rhs: VersionTwoUUIDGenerator) -> Bool {
+        lhs.domain == rhs.domain
+            && lhs.localID == rhs.localID
+            && lhs.dataStoreType == rhs.dataStoreType
+    }
+}
+
+// MARK: - Hashable
+
+extension VersionTwoUUIDGenerator: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(dataStoreType)
+        hasher.combine(domain)
+        hasher.combine(id)
+        hasher.combine(localID)
     }
 }
 

@@ -50,7 +50,9 @@ struct AnyUUIDGeneratorTests {
 }
 
 extension AnyUUIDGeneratorTests {
-    final class MockUUIDGenerator: UUIDGenerator {
+    struct MockUUIDGenerator: UUIDGenerator {
+        let id = -1
+
         // Always return the same state so we can compare.
         let uuidValue = UUID()
 

@@ -4,33 +4,25 @@ import Foundation
 
 // MARK: - PersistentDataStore
 
-final class PersistentDataStore {
-    static let shared = PersistentDataStore()
-
+struct PersistentDataStore {
     private let store: Store
 
-    private convenience init() {
-        let suiteName = UUID.persistentDataStoreSuiteName
-        guard let userDefaults = UserDefaults(suiteName: suiteName.uuidString) else {
-            preconditionFailure("Unable to create UserDefaults with suite name \(suiteName.uuidString)")
-        }
-
-        self.init(userDefaults: userDefaults)
+    init() {
+        self.init(store: .shared)
     }
 
-    init(userDefaults: UserDefaults) {
-        self.store = Store(userDefaults: userDefaults)
+    init(store: Store) {
+        self.store = store
     }
 }
 
 // MARK: DataStore
 
 extension PersistentDataStore: DataStore {
-    static var randomNodeKey: String { UUID.randomNodeKey.uuidString }
     var randomNode: WrappedRandomNodeValue? {
         get {
             guard
-                let cachedValue = store.getValue(forKey: Self.randomNodeKey),
+                let cachedValue = store.getValue(forKey: .randomNodeKey),
                 let data = cachedValue as? Data,
                 let wrappedValue = try? JSONDecoder().decode(WrappedRandomNodeValue.self, from: data)
             else {
@@ -39,10 +31,10 @@ extension PersistentDataStore: DataStore {
 
             return wrappedValue
         }
-        set {
+        nonmutating set {
             let wrappedValue = newValue
             let data = try? JSONEncoder().encode(wrappedValue)
-            store.set(data, forKey: Self.randomNodeKey)
+            store.set(data, forKey: .randomNodeKey)
         }
     }
 }
@@ -58,15 +50,15 @@ extension PersistentDataStore {
             self.userDefaults = userDefaults
         }
 
-        func getValue(forKey key: String) -> Any? {
+        func getValue(forKey key: UUID) -> Any? {
             lock.withLock {
-                userDefaults.object(forKey: key)
+                userDefaults.object(forKey: key.uuidString)
             }
         }
 
-        func set(_ value: Any?, forKey key: String) {
+        func set(_ value: Any?, forKey key: UUID) {
             lock.withLock {
-                userDefaults.set(value, forKey: key)
+                userDefaults.set(value, forKey: key.uuidString)
             }
 
             Task {
@@ -89,6 +81,17 @@ extension PersistentDataStore {
             #endif
         }
     }
+}
+
+extension PersistentDataStore.Store {
+    fileprivate static let shared: PersistentDataStore.Store = {
+        let suiteName = UUID.persistentDataStoreSuiteName
+        guard let userDefaults = UserDefaults(suiteName: suiteName.uuidString) else {
+            preconditionFailure("Unable to create UserDefaults with suite name \(suiteName.uuidString)")
+        }
+
+        return PersistentDataStore.Store(userDefaults: userDefaults)
+    }()
 }
 
 // MARK: Sendable

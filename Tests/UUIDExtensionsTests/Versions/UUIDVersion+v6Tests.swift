@@ -23,7 +23,7 @@ struct UUIDVersionV6Tests {
         )
     }
 
-    // https://www.rfc-editor.org/rfc/rfc9562#appendix-A.5
+    // https://www.rfc-editor.org/rfc/rfc9562#name-example-of-a-uuidv6-value
     @Test
     func matchesTheStandardExample() {
         let uuid = generator.new().uuidString

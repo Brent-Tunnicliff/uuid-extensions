@@ -21,7 +21,7 @@ struct UUIDVersionV3Tests {
         )
     }
 
-    // https://www.rfc-editor.org/rfc/rfc9562#appendix-A.2
+    // https://www.rfc-editor.org/rfc/rfc9562#name-example-of-a-uuidv3-value
     @Test
     func matchesTheStandardExample() {
         let uuid = generator.new().uuidString.lowercased()

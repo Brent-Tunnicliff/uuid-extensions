@@ -12,41 +12,31 @@ struct SecurePersistentDataStore {
         authenticatedData: Data?,
         key: SymmetricKey
     ) {
-        self.authenticatedData = authenticatedData
-        self.key = key
-        self.store = .securePersistent
+        self.init(
+            authenticatedData: authenticatedData,
+            key: key,
+            store: .securePersistentShared
+        )
     }
 
     init(
         authenticatedData: Data?,
         key: SymmetricKey,
-        userDefaults: UserDefaults
+        store: PersistentDataStore.Store
     ) {
         self.authenticatedData = authenticatedData
         self.key = key
-        self.store = PersistentDataStore.Store(userDefaults: userDefaults)
+        self.store = store
     }
-}
-
-extension PersistentDataStore.Store {
-    fileprivate static let securePersistent: PersistentDataStore.Store = {
-        let suiteName = UUID.securePersistentDataStoreSuiteName
-        guard let userDefaults = UserDefaults(suiteName: suiteName.uuidString) else {
-            preconditionFailure("Unable to create UserDefaults with suite name \(suiteName.uuidString)")
-        }
-
-        return PersistentDataStore.Store(userDefaults: userDefaults)
-    }()
 }
 
 // MARK: DataStore
 
 extension SecurePersistentDataStore: DataStore {
-    static var randomNodeKey: String { UUID.randomNodeKey.uuidString }
     var randomNode: WrappedRandomNodeValue? {
         get {
             guard
-                let cachedValue = store.getValue(forKey: Self.randomNodeKey),
+                let cachedValue = store.getValue(forKey: .randomNodeKey),
                 let data = cachedValue as? Data,
                 let wrappedValue: WrappedRandomNodeValue = try? decrypt(data)
             else {
@@ -58,7 +48,7 @@ extension SecurePersistentDataStore: DataStore {
         nonmutating set {
             store.set(
                 newValue.map { try? encrypt($0) } ?? nil,
-                forKey: Self.randomNodeKey
+                forKey: .randomNodeKey
             )
         }
     }
@@ -95,4 +85,17 @@ extension SecurePersistentDataStore: DataStore {
     enum Error: Swift.Error {
         case unableToGetSealedBoxCombinedData
     }
+}
+
+// MARK: - PersistentDataStore.Store
+
+extension PersistentDataStore.Store {
+    fileprivate static let securePersistentShared: PersistentDataStore.Store = {
+        let suiteName = UUID.securePersistentDataStoreSuiteName
+        guard let userDefaults = UserDefaults(suiteName: suiteName.uuidString) else {
+            preconditionFailure("Unable to create UserDefaults with suite name \(suiteName.uuidString)")
+        }
+
+        return PersistentDataStore.Store(userDefaults: userDefaults)
+    }()
 }

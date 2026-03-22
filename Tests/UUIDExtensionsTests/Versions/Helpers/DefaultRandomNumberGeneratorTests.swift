@@ -6,7 +6,7 @@ import Testing
 /// These tests are just sanity tests that the results appear to be roughly right
 /// and not causing crashes with incorrect data size.
 struct DefaultRandomNumberGeneratorTests {
-    private let randomNumberGenerator = DefaultRandomNumberGenerator.shared
+    private let randomNumberGenerator = DefaultRandomNumberGenerator()
     private let rangeOfIterations = 0..<100_000
 
     @Test
