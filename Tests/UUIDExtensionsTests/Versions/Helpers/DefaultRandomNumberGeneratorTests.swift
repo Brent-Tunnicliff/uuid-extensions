@@ -28,19 +28,4 @@ struct DefaultRandomNumberGeneratorTests {
             #expect(expectedRange.contains(randomNumberGenerator.int48))
         }
     }
-
-    @Test
-    func variant() {
-        // We only expect one of these four values to be returned.
-        let expectedValues: [UInt8] = [
-            0x80,
-            0x90,
-            0xa0,
-            0xb0,
-        ]
-
-        for _ in rangeOfIterations {
-            #expect(expectedValues.contains(randomNumberGenerator.variant))
-        }
-    }
 }

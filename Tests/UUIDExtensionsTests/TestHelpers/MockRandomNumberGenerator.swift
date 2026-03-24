@@ -29,26 +29,18 @@ final class MockRandomNumberGenerator: RandomNumberGenerator, @unchecked Sendabl
         set { lock.withLock { _int48 = newValue } }
     }
 
-    private var _variant: UInt8
-    var variant: UInt8 {
-        get { lock.withLock { _variant } }
-        set { lock.withLock { _variant = newValue } }
-    }
-
     init(
         bytesValue: [UInt8] = [0],
         clockSequence: UInt16 = 0,
         int48: UInt64 = 0,
         ofSizeUInt16: [UInt16] = [0],
-        singleByteValues: [UInt8] = [0],
-        variant: UInt8 = 0
+        singleByteValues: [UInt8] = [0]
     ) {
         self._bytesValue = bytesValue
         self._clockSequence = clockSequence
         self._int48 = int48
         self.ofSizeUInt16 = ofSizeUInt16
         self.singleByteValues = singleByteValues
-        self._variant = variant
     }
 
     func bytes(size: Int) -> [UInt8] {

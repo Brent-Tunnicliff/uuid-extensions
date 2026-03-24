@@ -10,8 +10,7 @@ struct UUIDVersionV6Tests {
     private let mockNodeService = MockNodeService()
     private let mockRandomNumberGenerator = MockRandomNumberGenerator(
         clockSequence: 0x33C8,
-        int48: 0x9E_6B_DE_CE_D8_46,
-        variant: 0xb0
+        int48: 0x9E_6B_DE_CE_D8_46
     )
     private let generator: VersionSixUUIDGenerator
 
@@ -65,6 +64,6 @@ struct UUIDVersionV6Tests {
         mockNodeService.node = (0x1a, 0x2b, 0x3c, 0x4d, 0x5e, 0x6f)
         mockRandomNumberGenerator.clockSequence = 0x22b7
         let secondValue = generator.new().uuidString
-        #expect(secondValue == "1EC9414C-8288-6C00-B2B7-1A2B3C4D5E6F")
+        #expect(secondValue == "1EC9414C-8288-6C00-A2B7-1A2B3C4D5E6F")
     }
 }

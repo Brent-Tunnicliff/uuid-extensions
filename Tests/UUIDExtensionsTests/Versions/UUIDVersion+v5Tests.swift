@@ -8,7 +8,7 @@ import Testing
 struct UUIDVersionV5Tests {
     private let name = "www.example.com"
     private let namespace = UUID.dns
-    private let mockRandomNumberGenerator = MockRandomNumberGenerator(variant: 0x80)
+    private let mockRandomNumberGenerator = MockRandomNumberGenerator()
     private let generator: VersionFiveUUIDGenerator
 
     init() {

@@ -126,7 +126,7 @@ extension VersionTwoUUIDGenerator: UUIDGenerator {
         var clockSeqHi = UInt8((clockSequence >> 8) & 0x3F)
 
         // Variant
-        clockSeqHi |= randomNumberGenerator.variant
+        clockSeqHi = (clockSeqHi & 0x3F) | 0x80
 
         let node = nodeService.node
 

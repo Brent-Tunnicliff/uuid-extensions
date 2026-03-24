@@ -10,10 +10,7 @@ struct UUIDVersionV2Tests {
     private let localID: UInt32 = 2
     private let mockDateService = MockDateService()
     private let mockNodeService = MockNodeService()
-    private let mockRandomNumberGenerator = MockRandomNumberGenerator(
-        int48: 0x9E_6B_DE_CE_D8_46,
-        variant: 0xb0
-    )
+    private let mockRandomNumberGenerator = MockRandomNumberGenerator(int48: 0x9E_6B_DE_CE_D8_46)
     private let clockSequenceService = ClockSequenceService(
         clockSequence: 0x33C8,
         previousTimestamp: 0

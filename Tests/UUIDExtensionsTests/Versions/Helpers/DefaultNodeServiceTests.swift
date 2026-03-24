@@ -13,10 +13,7 @@ struct DefaultNodeServiceTests {
     private let expectedNode = (0x9F, 0x6B, 0xDE, 0xCE, 0xD8, 0x46)
 
     init() {
-        self.mockRandomNumberGenerator = MockRandomNumberGenerator(
-            int48: randomValue,
-            variant: 0xb0
-        )
+        self.mockRandomNumberGenerator = MockRandomNumberGenerator(int48: randomValue)
         self.nodeService = DefaultNodeService(
             dataStore: dataStore,
             randomNumberGenerator: mockRandomNumberGenerator

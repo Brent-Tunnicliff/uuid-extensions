@@ -6,21 +6,22 @@ import Testing
 
 @Suite("UUIDVersion+v7Tests")
 struct UUIDVersionV7Tests {
+    private static let randA = 0xCC3
+    private static let randB = (0b01 << 60) | 0x8_C4_DC_0C_0C_07_39_8F
     private let mockDateService = MockDateService()
     private let mockRandomNumberGenerator = MockRandomNumberGenerator(
         bytesValue: [
-            0x0C,
-            0xC3,
-            0x08,
-            0xC4,
-            0xDC,
-            0x0C,
-            0x0C,
-            0x07,
-            0x39,
-            0x8F,
-        ],
-        variant: 0x90
+            UInt8((randA >> 8) & 0x0F),
+            UInt8(randA & 0xFF),
+            UInt8((randB >> 56)),
+            UInt8((randB >> 48) & 0xFF),
+            UInt8((randB >> 40) & 0xFF),
+            UInt8((randB >> 32) & 0xFF),
+            UInt8((randB >> 24) & 0xFF),
+            UInt8((randB >> 16) & 0xFF),
+            UInt8((randB >> 8) & 0xFF),
+            UInt8(randB & 0xFF),
+        ]
     )
     private let generator: VersionSevenUUIDGenerator
 
@@ -29,7 +30,7 @@ struct UUIDVersionV7Tests {
             configuration: .default,
             dateService: mockDateService,
             randomNumberGenerator: mockRandomNumberGenerator,
-            usleep: { _ in },
+            sleep: { _ in },
             state: VersionSevenUUIDGenerator.State(randomNumberGenerator: mockRandomNumberGenerator)
         )
     }
@@ -46,20 +47,31 @@ struct UUIDVersionV7Tests {
     @available(tvOS 16.0, *)
     @available(watchOS 9.0, *)
     func isValid() {
-        for _ in 0..<1000 {
-            let uuid = UUID(version: .v7).uuidString.lowercased()
+        let configurations: [V7Configuration] = [
+            .default,
+            .withFixedLengthCounter,
+            .withIncreasedClockPrecision,
+            .withIncreasedClockPrecisionAndFixedLengthCounter,
+            .withIncreasedClockPrecisionAndMonotonicRandomCounter,
+            .withMonotonicRandomCounter,
+        ]
 
-            // With the version and variant position we expect one of the following formats:
-            //  - xxxxxxxx-xxxx-7xxx-8xxx-xxxxxxxxxxxx
-            //  - xxxxxxxx-xxxx-7xxx-9xxx-xxxxxxxxxxxx
-            //  - xxxxxxxx-xxxx-7xxx-axxx-xxxxxxxxxxxx
-            //  - xxxxxxxx-xxxx-7xxx-bxxx-xxxxxxxxxxxx
-            let regex = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+        for configuration in configurations {
+            for _ in 0..<200 {
+                let uuid = UUID(version: .v7(configuration: configuration)).uuidString.lowercased()
 
-            #expect(
-                uuid.wholeMatch(of: regex) != nil,
-                "'\(uuid)' does not match the expected UUIDv7 regex pattern"
-            )
+                // With the version and variant position we expect one of the following formats:
+                //  - xxxxxxxx-xxxx-7xxx-8xxx-xxxxxxxxxxxx
+                //  - xxxxxxxx-xxxx-7xxx-9xxx-xxxxxxxxxxxx
+                //  - xxxxxxxx-xxxx-7xxx-axxx-xxxxxxxxxxxx
+                //  - xxxxxxxx-xxxx-7xxx-bxxx-xxxxxxxxxxxx
+                let regex = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+
+                #expect(
+                    uuid.wholeMatch(of: regex) != nil,
+                    "'\(uuid)' does not match the expected UUIDv7 regex pattern"
+                )
+            }
         }
     }
 }
@@ -78,8 +90,7 @@ struct UUIDVersionV7ConfigurationTests {
             // Adding all the bytes needed for any of the tests so each test doesn't need to set this up themselves.
             bytesValue: Array(0x00...0x2f),
             ofSizeUInt16: [0x0000, 0x0987],
-            singleByteValues: [0x15, 0xac, 0x72],
-            variant: 0x90
+            singleByteValues: [0x15, 0xac, 0x72]
         )
     }
 
@@ -89,11 +100,11 @@ struct UUIDVersionV7ConfigurationTests {
             configuration: .withIncreasedClockPrecision,
             dateService: mockDateService,
             randomNumberGenerator: mockRandomNumberGenerator,
-            usleep: { _ in },
+            sleep: { _ in },
             state: VersionSevenUUIDGenerator.State(randomNumberGenerator: mockRandomNumberGenerator)
         )
 
-        #expect(generator.new().uuidString == "017F22E2-7A2B-73E7-9001-020304050607")
+        #expect(generator.new().uuidString == "017F22E2-7A2B-73E7-8001-020304050607")
     }
 
     enum CounterArgument: CaseIterable {
@@ -115,45 +126,45 @@ struct UUIDVersionV7ConfigurationTests {
             switch self {
             case .fixedLength:
                 (
-                    "017F22E2-7A2B-7000-9001-020304050607",
-                    "017F22E2-7A2B-7001-9809-0A0B0C0D0E0F",
+                    "017F22E2-7A2B-7000-8001-020304050607",
+                    "017F22E2-7A2B-7001-8809-0A0B0C0D0E0F",
                     "017F22E2-7A2B-7002-9011-121314151617",
                     "017F22E2-7A2B-7003-9819-1A1B1C1D1E1F",
-                    "017F22E2-7E13-7987-9021-222324252627",
+                    "017F22E2-7E13-7987-A021-222324252627",
                 )
             case .increasedClockPrecisionAndFixedLength:
                 (
-                    "017F22E2-7A2B-73E7-9000-000102030405",
-                    "017F22E2-7A2B-73E7-9001-060708090A0B",
-                    "017F22E2-7A2B-73E7-9002-0C0D0E0F1011",
-                    "017F22E2-7A2B-73E7-9003-121314151617",
-                    "017F22E2-7E13-73E7-9987-18191A1B1C1D",
+                    "017F22E2-7A2B-73E7-8000-000102030405",
+                    "017F22E2-7A2B-73E7-8001-060708090A0B",
+                    "017F22E2-7A2B-73E7-8002-0C0D0E0F1011",
+                    "017F22E2-7A2B-73E7-8003-121314151617",
+                    "017F22E2-7E13-73E7-8987-18191A1B1C1D",
                 )
             case .increasedClockPrecisionAndMonotonicRandom:
                 (
-                    "017F22E2-7A2B-73E7-9001-020304050607",
-                    "017F22E2-7A2B-73E7-9001-020304050715",
-                    "017F22E2-7A2B-73E7-9001-0203040508AC",
-                    "017F22E2-7A2B-73E7-9001-020304050972",
-                    "017F22E2-7E13-73E7-9809-0A0B0C0D0E0F",
+                    "017F22E2-7A2B-73E7-8001-020304050607",
+                    "017F22E2-7A2B-73E7-8001-020304050715",
+                    "017F22E2-7A2B-73E7-8001-0203040508AC",
+                    "017F22E2-7A2B-73E7-8001-020304050972",
+                    "017F22E2-7E13-73E7-8809-0A0B0C0D0E0F",
                 )
             case .monotonicRandom:
                 (
-                    "017F22E2-7A2B-7001-9203-040506070809",
-                    "017F22E2-7A2B-7001-9203-040506070915",
-                    "017F22E2-7A2B-7001-9203-040506070AAC",
-                    "017F22E2-7A2B-7001-9203-040506070B72",
-                    "017F22E2-7E13-7A0B-9C0D-0E0F10111213",
+                    "017F22E2-7A2B-7001-8203-040506070809",
+                    "017F22E2-7A2B-7001-8203-040506070915",
+                    "017F22E2-7A2B-7001-8203-040506070AAC",
+                    "017F22E2-7A2B-7001-8203-040506070B72",
+                    "017F22E2-7E13-7A0B-8C0D-0E0F10111213",
                 )
             }
         }
 
-        var expectedSleepMicroseconds: UInt32 {
+        var expectedSleepSeconds: TimeInterval {
             switch self {
             case .fixedLength, .monotonicRandom:
-                1000
+                0.001
             case .increasedClockPrecisionAndFixedLength, .increasedClockPrecisionAndMonotonicRandom:
-                1
+                0.000001
             }
         }
     }
@@ -167,7 +178,7 @@ struct UUIDVersionV7ConfigurationTests {
             configuration: argument.configuration,
             dateService: mockDateService,
             randomNumberGenerator: mockRandomNumberGenerator,
-            usleep: { _ in },
+            sleep: { _ in },
             state: VersionSevenUUIDGenerator.State(randomNumberGenerator: mockRandomNumberGenerator)
         )
 
@@ -210,15 +221,14 @@ struct UUIDVersionV7ConfigurationTests {
                 clockSequence: UInt16.max,
                 int48: UInt64.max,
                 ofSizeUInt16: (0..<40).map { _ in UInt16.max },
-                singleByteValues: (0..<40).map { _ in UInt8.max },
-                variant: UInt8.max
+                singleByteValues: (0..<40).map { _ in UInt8.max }
             )
 
             let generator = VersionSevenUUIDGenerator(
                 configuration: argument.configuration,
                 dateService: mockDateService,
                 randomNumberGenerator: mockRandomNumberGenerator,
-                usleep: {
+                sleep: {
                     // Make sure to increment the date to avoid this immediately getting called again.
                     // As the system will call to create a new UUID right after this "sleep".
                     mockDateService.nowValue = mockDateService.nowValue.advanced(by: 1)
@@ -235,6 +245,6 @@ struct UUIDVersionV7ConfigurationTests {
             _ = generator.new()
         }
 
-        #expect(sleepLength == argument.expectedSleepMicroseconds)
+        #expect(sleepLength == argument.expectedSleepSeconds)
     }
 }

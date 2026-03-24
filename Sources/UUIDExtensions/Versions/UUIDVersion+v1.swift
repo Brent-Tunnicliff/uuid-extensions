@@ -99,10 +99,8 @@ extension VersionOneUUIDGenerator: UUIDGenerator {
         // Version 1
         timeHi |= 0x1000
 
-        var clockSeqHi = UInt8((clockSequence >> 8) & 0x3F)
-
         // Variant
-        clockSeqHi |= randomNumberGenerator.variant
+        let clockSeqHi = UInt8((clockSequence >> 8) & 0x3F) | 0x80
 
         let clockSeqLow = UInt8(clockSequence & 0xFF)
         let node = nodeService.node

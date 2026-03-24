@@ -98,7 +98,7 @@ extension VersionThreeUUIDGenerator: UUIDGenerator {
         bytes[6] = (bytes[6] & 0x0F) | 0x30
 
         // Variant
-        bytes[8] = (bytes[8] & 0x3F) | randomNumberGenerator.variant
+        bytes[8] = (bytes[8] & 0x3F) | 0x80
 
         return UUID(
             uuid: (

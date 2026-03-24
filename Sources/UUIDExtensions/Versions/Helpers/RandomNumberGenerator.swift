@@ -10,9 +10,6 @@ protocol RandomNumberGenerator: Sendable {
     /// Returns a random 48 bit number.
     var int48: UInt64 { get }
 
-    /// Returns a random value for [Variant](https://www.rfc-editor.org/rfc/rfc9562#name-variant-field).
-    var variant: UInt8 { get }
-
     func bytes(size: Int) -> [UInt8]
 
     func of(size: UInt16) -> UInt16
@@ -35,12 +32,6 @@ struct DefaultRandomNumberGenerator: RandomNumberGenerator {
 
     var int48: UInt64 {
         UInt64.random(in: 0..<(1 << 48))
-    }
-
-    var variant: UInt8 {
-        let values: [UInt8] = [0x80, 0x90, 0xa0, 0xb0]
-        let index = Int.random(in: 0..<values.count)
-        return values[index]
     }
 
     func bytes(size: Int) -> [UInt8] {
