@@ -18,7 +18,7 @@ extension UUIDVersion {
     ///    - name: The name to use for generating the UUID.
     /// - Returns: ``UUIDVersion`` configured as `v3` based on the inputs.
     ///
-    /// - Warning: Recommended to use ``v5`` instead where possible.
+    /// - Warning: Recommended to use ``v5(namespace:name:)`` instead where possible.
     public static func v3(
         namespace: UUID,
         name: String
