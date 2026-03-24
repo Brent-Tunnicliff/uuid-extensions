@@ -16,13 +16,17 @@ final class MockDateService: DateService, @unchecked Sendable {
         nowValue
     }
 
-    init() {
+    convenience init() {
         // Example date from [Appendix A. Test Vectors](https://www.rfc-editor.org/rfc/rfc9562#name-test-vectors).
         let exampleDate = "2022-02-22T19:22:22Z"
         guard let date = ISO8601DateFormatter().date(from: exampleDate) else {
             preconditionFailure("Unable to convert to date: \(exampleDate)")
         }
 
-        self._nowValue = date
+        self.init(nowValue: date)
+    }
+
+    init(nowValue: Date) {
+        self._nowValue = nowValue
     }
 }

@@ -47,7 +47,7 @@ struct UUIDVersionV6Tests {
 
             #expect(
                 uuid.wholeMatch(of: regex) != nil,
-                "'\(uuid)' does not match the expected UUIDv1 regex pattern"
+                "'\(uuid)' does not match the expected UUIDv6 regex pattern"
             )
         }
     }
