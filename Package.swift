@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
@@ -35,7 +35,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-crypto.git", .upToNextMajor(from: "4.2.0")),
         .package(url: "https://github.com/Brent-Tunnicliff/swift-format-plugin", .upToNextMajor(from: "2.0.0")),
         .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.0.0"),
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "603.0.0"),
     ],
     targets: [
         .target(

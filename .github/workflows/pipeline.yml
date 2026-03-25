@@ -36,7 +36,7 @@ jobs:
       runs_on: "macos-26"
       scheme: "uuid-extensions"
       simulator_version: "${{ matrix.target.simulator_version }}"
-      xcode_path: "/Applications/Xcode_26.3.app"
+      xcode_path: "/Applications/Xcode_26.4.app"
 
   swift:
     strategy:
