@@ -33,7 +33,7 @@ TODO: fill out.
 
 ### Macro
 
-The freestanding macro can be used directly where ever the UUID needs to be created with:
+This freestanding macro can be used directly wherever the UUID needs to be created with:
 
 ```swift
 import UUIDExtensions
@@ -43,11 +43,9 @@ let id: UUID = #uuid("95034084-7faa-4311-88dc-3cbc8052b359")
 
 The input is type "StaticString", so the value must be known at compile time.
 
-If an invalid string is passed in as a parameter then you will get a compile error that it isn't a valid UUID.
+If the input does not have a valid UUID format, then you will get a compile error that it isn't a valid UUID.
 
 ```swift
-import UUIDExtensions
-
 // Compile error: 'hello :)' is not a valid UUID
 let id: UUID = #uuid("hello :)")
 ```
@@ -60,62 +58,68 @@ They are added as static extension to the Foundation.UUID type.
 #### nil
 
 Nil UUID has all 128 bits set to 0.
-<https://www.rfc-editor.org/rfc/rfc9562#section-5.9>
 
 ```swift
 // 00000000-0000-0000-0000-000000000000
 let id: UUID = .nil
 ```
 
+<https://www.rfc-editor.org/rfc/rfc9562#section-5.9>
+
 #### max
 
 Max UUID has all 128 bits set to 1.
-<https://www.rfc-editor.org/rfc/rfc9562#section-5.10>.
 
 ```swift
 // FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF
 let id: UUID = .max
 ```
 
+<https://www.rfc-editor.org/rfc/rfc9562#section-5.10>.
+
 #### dns
 
 DNS namespace ID for v3 and v5 UUID's.
-<https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
 ```swift
 // 6BA7B810-9DAD-11D1-80B4-00C04FD430C8
 let id: UUID = .dns
 ```
 
+<https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
+
 #### url
 
 URL namespace ID for v3 and v5 UUID's.
-<https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
 ```swift
 // 6BA7B811-9DAD-11D1-80B4-00C04FD430C8
 let id: UUID = .url
 ```
 
+<https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
+
 #### oid
 
 OID namespace ID for v3 and v5 UUID's.
-<https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
 ```swift
 // 6BA7B812-9DAD-11D1-80B4-00C04FD430C8
 let id: UUID = .oid
 ```
 
+<https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
+
 #### x500
 
 X500 namespace ID for v3 and v5 UUID's.
-<https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
 ```swift
 // 6BA7B814-9DAD-11D1-80B4-00C04FD430C8
 let id: UUID = .x500
 ```
+
+<https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
 ## Source Stability
 
