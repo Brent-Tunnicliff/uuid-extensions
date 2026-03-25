@@ -4,6 +4,10 @@ name: Pipeline
 
 on:
   push:
+    paths:
+      - '**.resolved'
+      - '**.swift'
+      - '**.yml'
   workflow_dispatch:
 
 jobs:
