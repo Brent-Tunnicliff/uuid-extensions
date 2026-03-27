@@ -27,9 +27,9 @@ let package = Package(
 
 ## How to use
 
-### Versions
+### UUID Versions
 
-#### v1
+#### UUID v1
 
 Time and node based UUID.
 
@@ -68,7 +68,7 @@ let id: UUID = .v1(dataStore: .securePersistent(key: key, authenticatedData: dat
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-1>
 
-#### v2
+#### UUID v2
 
 Very similar to v1, but embeds the domain and local id for linking to the creator if that level of audibility is needed.
 
@@ -105,7 +105,7 @@ let id: UUID = .v2(dataStore: .securePersistent(key: key, authenticatedData: dat
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-2>
 
-#### v3
+#### UUID v3
 
 Generates UUID based on hashing the namespace and name inputs with MD5.
 
@@ -125,7 +125,7 @@ let id: UUID = .v3(namespace: namespace, name: name)
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-3>
 
-#### v4
+#### UUID v4
 
 A randomly generated UUID.
 
@@ -142,7 +142,7 @@ let id: UUID = UUID()
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-4>
 
-#### v5
+#### UUID v5
 
 The same inputs and similar method to v3, except uses SHA-1 to hash the inputs.
 
@@ -160,7 +160,7 @@ let id: UUID = .v5(namespace: namespace, name: name)
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-5>
 
-#### v6
+#### UUID v6
 
 Similar to `v1`, but reordered the leading timestamp for improved DB locality.
 
@@ -174,7 +174,7 @@ let id: UUID = .v6
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-6>
 
-#### v7
+#### UUID v7
 
 Time-ordered UUID, useful when the wanting the UUID value to increment with each new one.
 
@@ -224,6 +224,19 @@ let id: UUID = .v7(configuration: .withIncreasedClockPrecision(counter: .monoton
 ```
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7>
+
+#### UUID v8
+
+Provides a format for experimental or vendor-specific use cases.
+
+The implementation in this package is just a way to wrap the desired value and set the version and variant fields.
+
+Can be generated based on:
+
+- `uuid_t`: The same type used in `Foundation.init(uuid:)`. But we edit it to set the version and variant.
+- `Data`: We take the prefix of data, pad the end with 0 if needed, then set the version and variant.
+
+<https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-8>
 
 ### Macro
 

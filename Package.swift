@@ -50,6 +50,7 @@ let package = Package(
                 "UUIDExtensions",
                 // Only adding UUIDMacros so we can check if it is importable for the macro test.
                 .targetItem(name: "UUIDMacros", condition: macroDependencyCondition),
+                .product(name: "Crypto", package: "swift-crypto"),
             ]
         ),
         .macro(
