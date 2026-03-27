@@ -29,7 +29,201 @@ let package = Package(
 
 ### Versions
 
-TODO: fill out.
+#### v1
+
+Time and node based UUID.
+
+Node is typically based on the MAC address of the machine that generates it, 
+but due to complexity around supporting that for a niche version,  decided to go for the option
+of a randomly generated node.
+
+By default it will persist the node value to `UserDefaults`. But you can customise this to be in memory only, 
+or add encryption when storing it in UserDefaults.
+
+Example: C232AB00-9414-11EC-B3C8-9F6BDECED846
+
+```swift
+// Default implementation 
+let id: UUID = .v1
+```
+
+```swift
+// Keep state in memory only
+let id: UUID = .v1(dataStore: .inMemory)
+```
+
+```swift
+// Persist state to disk.
+let id: UUID = .v1(dataStore: .persistent)
+```
+
+```swift
+// Persist encrypted state to disk.
+// The same key needs to be used to decrypt, so store it somewhere secure.
+// An optional `authenticatedData` can also be passed in as an extra check that always needs to be the same value.
+let key = SymmetricKey(size: .bits256)
+let data: Data?
+let id: UUID = .v1(dataStore: .securePersistent(key: key, authenticatedData: data))
+```
+
+<https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-1>
+
+#### v2
+
+Very similar to v1, but embeds the domain and local id for linking to the creator if that level of audibility is needed.
+
+It sacrifices a lot of its randomness, increasing the risk of collisions (same UUID value bing generated multiple times).
+
+V2 is seen as a very niche version.
+
+```swift
+let domain: UInt8
+let localID: UInt32
+
+// Default implementation
+let id: UUID = .v2(domain: domain, localID: localID)
+```
+
+```swift
+// Keep state in memory only
+let id: UUID = .v2(dataStore: .inMemory, domain: domain, localID: localID)
+```
+
+```swift
+// Persist state to disk.
+let id: UUID = .v2(dataStore: .persistent, domain: domain, localID: localID)
+```
+
+```swift
+// Persist encrypted state to disk.
+// The same key needs to be used to decrypt, so store it somewhere secure.
+// An optional `authenticatedData` can also be passed in as an extra check that always needs to be the same value.
+let key = SymmetricKey(size: .bits256)
+let data: Data?
+let id: UUID = .v2(dataStore: .securePersistent(key: key, authenticatedData: data), domain: domain, localID: localID)
+```
+
+<https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-2>
+
+#### v3
+
+Generates UUID based on hashing the namespace and name inputs with MD5.
+
+Has no random or time based aspect, so passing in the same inputs will always return the same response.
+
+Useful for generating meaningful UUID's that can be repeated/verified.
+
+It is recommended to use `v5` over this if possible.
+
+```swift
+// Can use a specified constant as the namespace like `.domain`, `.url`, `.oid`, `.x500`, or your own custom UUID value.
+let namespace: UUID
+let name: String
+
+let id: UUID = .v3(namespace: namespace, name: name)
+```
+
+<https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-3>
+
+#### v4
+
+A randomly generated UUID.
+
+The default `Foundation.UUID()` initialisation uses v4, so this is just a wrapper of that default behaviour.
+
+Has been included for completeness.
+
+```swift
+let id: UUID = .v4
+
+// is the same as
+let id: UUID = UUID()
+```
+
+<https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-4>
+
+#### v5
+
+The same inputs and similar method to v3, except uses SHA-1 to hash the inputs.
+
+Has no random or time based aspect, so passing in the same inputs will always return the same response.
+
+Useful for generating meaningful UUID's that can be repeated/verified.
+
+```swift
+// Can use a specified constant as the namespace like `.domain`, `.url`, `.oid`, `.x500`, or your own custom UUID value.
+let namespace: UUID
+let name: String
+
+let id: UUID = .v5(namespace: namespace, name: name)
+```
+
+<https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-5>
+
+#### v6
+
+Similar to `v1`, but reordered the leading timestamp for improved DB locality.
+
+This is also following the recommendation to use a new random node and clock sequence for each UUID generated.
+
+It is recommended to use `v7` over this if possible.
+
+```swift
+let id: UUID = .v6
+```
+
+<https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-6>
+
+#### v7
+
+Time-ordered UUID, useful when the wanting the UUID value to increment with each new one.
+
+Generates with milliseconds in the most significant bits and random for the remaining.
+
+Optional configurations can be used to increase the precision of the timestamp to microseconds, and/or adding counter logic.
+
+Both of the counter options guarantee that the UUID will always increment from the last, even if many get generated within the same timestamp value.
+
+- Fixed length counter increments by 1 from a previous that shares the same timestamp. But the end value still has enough random values to make future values unpredictable.
+- Monotonic random counter makes sure the random values of the UUID are always a higher value then any previous values that share the same timestamp in a way that makes predicting the next value difficult.
+
+For both counter types, in the edge case that we reach the highest possible value for that timestamp, it will sleep and wait for the next time stamp value.
+This can be either 1 millisecond, or 1 microsecond based on if increased clock precision is enabled or not.
+
+```swift
+// Default implementation
+let id: UUID = .v7
+
+// or
+let id: UUID = .v7(configuration: .default)
+``` 
+
+```swift
+// Generates timestamp with microseconds 
+let id: UUID = .v7(configuration: .withIncreasedClockPrecision)
+```
+
+```swift
+// Generates with the fixed length counter
+let id: UUID = .v7(configuration: .with(counter: .fixedLength))
+```
+
+```swift
+// Generates with the monotonic random counter
+let id: UUID = .v7(configuration: .with(counter: .monotonicRandom))
+```
+
+```swift
+// Generates timestamp with microseconds and the fixed length counter
+let id: UUID = .v7(configuration: .withIncreasedClockPrecision(counter: .fixedLength))
+```
+
+```swift
+// Generates timestamp with microseconds and the monotonic random counter
+let id: UUID = .v7(configuration: .withIncreasedClockPrecision(counter: .monotonicRandom))
+```
+
+<https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-7>
 
 ### Macro
 
