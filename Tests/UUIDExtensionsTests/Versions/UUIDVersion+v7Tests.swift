@@ -49,11 +49,11 @@ struct UUIDVersionV7Tests {
     func isValid() {
         let configurations: [V7Configuration] = [
             .default,
-            .withFixedLengthCounter,
+            .with(counter: .fixedLength),
+            .with(counter: .monotonicRandom),
             .withIncreasedClockPrecision,
-            .withIncreasedClockPrecisionAndFixedLengthCounter,
-            .withIncreasedClockPrecisionAndMonotonicRandomCounter,
-            .withMonotonicRandomCounter,
+            .withIncreasedClockPrecision(counter: .fixedLength),
+            .withIncreasedClockPrecision(counter: .monotonicRandom),
         ]
 
         for configuration in configurations {
@@ -115,10 +115,10 @@ struct UUIDVersionV7ConfigurationTests {
 
         var configuration: V7Configuration {
             switch self {
-            case .fixedLength: .withFixedLengthCounter
-            case .increasedClockPrecisionAndFixedLength: .withIncreasedClockPrecisionAndFixedLengthCounter
-            case .increasedClockPrecisionAndMonotonicRandom: .withIncreasedClockPrecisionAndMonotonicRandomCounter
-            case .monotonicRandom: .withMonotonicRandomCounter
+            case .fixedLength: .with(counter: .fixedLength)
+            case .increasedClockPrecisionAndFixedLength: .withIncreasedClockPrecision(counter: .fixedLength)
+            case .increasedClockPrecisionAndMonotonicRandom: .withIncreasedClockPrecision(counter: .monotonicRandom)
+            case .monotonicRandom: .with(counter: .monotonicRandom)
             }
         }
 

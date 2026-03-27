@@ -123,7 +123,7 @@ extension VersionSevenUUIDGenerator: UUIDGenerator {
 
         let randomBytes: [UInt8]
         do {
-            switch configuration.counter {
+            switch configuration.counter?.value {
             case nil:
                 randomBytes = generateRandomBytes(currentIndex: currentIndexValue)
             case .fixedLength:
