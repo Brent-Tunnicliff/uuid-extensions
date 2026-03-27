@@ -11,44 +11,57 @@ on:
   workflow_dispatch:
 
 jobs:
-  xcodebuild:
-    strategy:
-      # Don't cancel the other matrix values if one fails.
-      fail-fast: false
-      matrix:
-        target: [
-          { platform: "iOS", simulator_version: "26.2" },
-          { platform: "tvOS", simulator_version: "26.2" },
-          { platform: "watchOS", simulator_version: "26.2" },
-          { platform: "visionOS", simulator_version: "26.2" },
+  # xcodebuild:
+  #   strategy:
+  #     # Don't cancel the other matrix values if one fails.
+  #     fail-fast: false
+  #     matrix:
+  #       target: [
+  #         { platform: "iOS", simulator_version: "26.2" },
+  #         { platform: "tvOS", simulator_version: "26.2" },
+  #         { platform: "watchOS", simulator_version: "26.2" },
+  #         { platform: "visionOS", simulator_version: "26.2" },
 
-          # macOS runs on the host and doesn't need a simulator.
-          { platform: "macOS", simulator_version: "" },
-        ]
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/xcodebuild.yml@v2
-    with:
-      platform: "${{ matrix.target.platform }}"
-      runs_on: "macos-26"
-      scheme: "uuid-extensions"
-      simulator_version: "${{ matrix.target.simulator_version }}"
-      xcode_path: "/Applications/Xcode_26.3.app"
+  #         # macOS runs on the host and doesn't need a simulator.
+  #         { platform: "macOS", simulator_version: "" },
+  #       ]
+  #   uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/xcodebuild.yml@v2
+  #   with:
+  #     platform: "${{ matrix.target.platform }}"
+  #     runs_on: "macos-26"
+  #     scheme: "uuid-extensions"
+  #     simulator_version: "${{ matrix.target.simulator_version }}"
+  #     xcode_path: "/Applications/Xcode_26.3.app"
+
+  # swift:
+  #   strategy:
+  #     # Don't cancel the other matrix values if one fails.
+  #     fail-fast: false
+  #     matrix:
+  #       run_on: [
+  #         "ubuntu-latest",
+  #         "macos-latest",
+  #         "windows-latest",
+  #       ]
+  #   uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@v2
+  #   with:
+  #     runs_on: "${{ matrix.run_on }}"
 
   swift:
     strategy:
       # Don't cancel the other matrix values if one fails.
       fail-fast: false
       matrix:
-        run_on: [
-          "ubuntu-latest",
-          "macos-latest",
-          "windows-latest",
+        sdk: [
+          "android",
+          "wasm"
         ]
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@v2
+    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@customise_swift_version_and_sdk
     with:
-      runs_on: "${{ matrix.run_on }}"
+      runs_on: "ubuntu-latest"
+      sdks: "${{ matrix.sdk }}"
 
-  lint:
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/lint.yml@v2
-    with:
-      runs_on: "macos-26"
-
+  # lint:
+  #   uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/lint.yml@v2
+  #   with:
+  #     runs_on: "macos-26"
