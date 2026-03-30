@@ -2,33 +2,73 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
+import CompilerPluginSupport
 import PackageDescription
 
 // MARK: - Package
 
-let package = Package(
-    name: "REPLACE_ME",
+// The macro targets can only build on the actual machine you develop with which should be macOS, linux or Windows.
+let macroDependencyCondition = TargetDependencyCondition.when(
     platforms: [
-        .iOS(.v26),
-        .macOS(.v26),
-        .tvOS(.v26),
-        .watchOS(.v26),
-        .visionOS(.v26),
+        .macOS,
+        .linux,
+        .windows,
+    ]
+)
+
+let package = Package(
+    name: "uuid-extensions",
+    platforms: [
+        .iOS(.v13),
+        .macCatalyst(.v13),
+        .macOS(.v10_15),
+        .tvOS(.v13),
+        .watchOS(.v6),
     ],
     products: [
         .library(
-            name: "REPLACE_ME",
-            targets: ["REPLACE_ME"]
+            name: "UUIDExtensions",
+            targets: ["UUIDExtensions"]
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/Brent-Tunnicliff/swift-format-plugin", .upToNextMajor(from: "2.0.0"))
+        .package(url: "https://github.com/apple/swift-crypto.git", .upToNextMajor(from: "4.2.0")),
+        .package(url: "https://github.com/Brent-Tunnicliff/swift-format-plugin", .upToNextMajor(from: "2.0.0")),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"),
     ],
     targets: [
-        .target(name: "REPLACE_ME"),
+        .target(
+            name: "UUIDExtensions",
+            dependencies: [
+                "UUIDMacros",
+                .product(name: "Crypto", package: "swift-crypto"),
+            ]
+        ),
         .testTarget(
-            name: "REPLACE_METests",
-            dependencies: ["REPLACE_ME"]
+            name: "UUIDExtensionsTests",
+            dependencies: [
+                "UUIDExtensions",
+                // Only adding UUIDMacros so we can check if it is importable for the macro test.
+                .targetItem(name: "UUIDMacros", condition: macroDependencyCondition),
+                .product(name: "Crypto", package: "swift-crypto"),
+            ]
+        ),
+        .macro(
+            name: "UUIDMacros",
+            dependencies: [
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax", condition: macroDependencyCondition),
+                .product(name: "SwiftSyntax", package: "swift-syntax", condition: macroDependencyCondition),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax", condition: macroDependencyCondition),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax", condition: macroDependencyCondition),
+            ]
+        ),
+        .testTarget(
+            name: "UUIDMacrosTests",
+            dependencies: [
+                .targetItem(name: "UUIDMacros", condition: macroDependencyCondition),
+                .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
+            ]
         ),
     ]
 )
@@ -49,10 +89,6 @@ for target in package.targets where target.type != .plugin {
     // MARK: Swift compliler settings
 
     let commonSwiftSettings: [PackageDescription.SwiftSetting] = [
-        // Optional: Set defaultIsolation to `MainActor` if desired.
-        // Probably only useful in a UI heavy package.
-        // .defaultIsolation(MainActor.self),
-
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InferIsolatedConformances"),
         .enableUpcomingFeature("InternalImportsByDefault"),

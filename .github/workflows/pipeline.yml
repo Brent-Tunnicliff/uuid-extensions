@@ -4,10 +4,14 @@ name: Pipeline
 
 on:
   push:
+    paths:
+      - '**.resolved'
+      - '**.swift'
+      - '**.yml'
   workflow_dispatch:
 
 jobs:
-  package_xcodebuild:
+  xcodebuild:
     strategy:
       # Don't cancel the other matrix values if one fails.
       fail-fast: false
@@ -19,17 +23,17 @@ jobs:
           { platform: "visionOS", simulator_version: "26.2" },
 
           # macOS runs on the host and doesn't need a simulator.
-          { platform: "macOS", simulator_version: "" }
+          { platform: "macOS", simulator_version: "" },
         ]
     uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/xcodebuild.yml@v2
     with:
       platform: "${{ matrix.target.platform }}"
       runs_on: "macos-26"
-      scheme: "REPLACE_ME-Package"
+      scheme: "uuid-extensions"
       simulator_version: "${{ matrix.target.simulator_version }}"
       xcode_path: "/Applications/Xcode_26.3.app"
 
-  package_swift:
+  swift:
     strategy:
       # Don't cancel the other matrix values if one fails.
       fail-fast: false
@@ -43,37 +47,27 @@ jobs:
     with:
       runs_on: "${{ matrix.run_on }}"
 
-  demo:
+  swift_sdks:
     strategy:
       # Don't cancel the other matrix values if one fails.
       fail-fast: false
       matrix:
-        target: [
-          { platform: "iOS", simulator_version: "26.2" },
-          { platform: "tvOS", simulator_version: "26.2" },
-          { platform: "watchOS", simulator_version: "26.2" },
-          { platform: "visionOS", simulator_version: "26.2" },
-
-          # macOS runs on the host and doesn't need a simulator.
-          { platform: "macOS", simulator_version: "" }
+        platform: [
+          { sdks: "android", swift_sdk: "swift-6.3-RELEASE_android" },
+          { sdks: "wasm", swift_sdk: "swift-6.3-RELEASE_wasm" },
         ]
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/xcodebuild.yml@v2
+    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@v2
+    name: "swift (${{ matrix.platform.sdks }})"
     with:
-      platform: "${{ matrix.target.platform }}"
-      runs_on: "macos-26"
-      # watch has its own scheme and target.
-      scheme: "${{ case(
-        matrix.target.platform == 'watchOS', 'Demo Watch App',
-        'Demo'
-      ) }}"
-      simulator_version: "${{ matrix.target.simulator_version }}"
-      # No tests configured for demo app.
+      runs_on: "ubuntu-latest"
+      sdks: "${{ matrix.platform.sdks }}"
+      # Due to a bug we cannot build test targets for packages that contain macros when cross compiling different archs.
+      # See: https://github.com/swiftlang/swift-package-manager/issues/8094
       skip_tests: true
-      xcode_path: "/Applications/Xcode_26.3.app"
-      working_directory: "./Demo"
+      swift_sdk: "${{ matrix.platform.swift_sdk }}"
+      swift_version: "6.3"
 
   lint:
     uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/lint.yml@v2
     with:
       runs_on: "macos-26"
-

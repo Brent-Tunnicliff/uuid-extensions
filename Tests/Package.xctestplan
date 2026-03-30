@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "40FEF27C-DF42-45BB-A51F-64DAED61B073",
+      "id" : "1A17EC4A-21C7-4A3C-98A0-01B26D08EECE",
       "name" : "Test Scheme Action",
       "options" : {
 
@@ -9,15 +9,6 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : {
-      "targets" : [
-        {
-          "containerPath" : "container:",
-          "identifier" : "REPLACE_ME",
-          "name" : "REPLACE_ME"
-        }
-      ]
-    },
     "defaultTestExecutionTimeAllowance" : 60,
     "testExecutionOrdering" : "random",
     "testTimeoutsEnabled" : true
@@ -26,8 +17,15 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "REPLACE_METests",
-        "name" : "REPLACE_METests"
+        "identifier" : "UUIDMacrosTests",
+        "name" : "UUIDMacrosTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "UUIDExtensionsTests",
+        "name" : "UUIDExtensionsTests"
       }
     }
   ],
