@@ -3,9 +3,8 @@
 The purpose of this project is:
 
 1. Expand Foundation UUID creation to support various versions as per [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562) as creating a new Foundation.UUID object uses v4.
-2. Provide a macro for creating UUID's with StaticString that fails the build instead of returning optional if the input is invalid.
-3. Provide constants for `nil` and `max` UUIDs. 
-4. Support all swift platforms that can import Foundation. 
+2. Provide constants for `nil` and `max` UUIDs. 
+3. Support all swift platforms that can import Foundation. 
 
 ## Installation
 
@@ -237,25 +236,6 @@ Can be generated based on:
 - `Data`: We take the prefix of data, pad the end with 0 if needed, then set the version and variant.
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-8>
-
-### Macro
-
-This freestanding macro can be used directly wherever the UUID needs to be created with:
-
-```swift
-import UUIDExtensions
-
-let id: UUID = #uuid("95034084-7faa-4311-88dc-3cbc8052b359")
-```
-
-The input is type "StaticString", so the value must be known at compile time.
-
-If the input does not have a valid UUID format, then you will get a compile error that it isn't a valid UUID.
-
-```swift
-// Compile error: 'hello :)' is not a valid UUID
-let id: UUID = #uuid("hello :)")
-```
 
 ### Constants
 

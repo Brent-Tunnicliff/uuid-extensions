@@ -17,13 +17,6 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "UUIDMacrosTests",
-        "name" : "UUIDMacrosTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:",
         "identifier" : "UUIDExtensionsTests",
         "name" : "UUIDExtensionsTests"
       }

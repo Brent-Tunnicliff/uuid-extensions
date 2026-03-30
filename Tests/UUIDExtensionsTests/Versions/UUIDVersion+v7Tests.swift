@@ -7,7 +7,7 @@ import Testing
 @Suite("UUIDVersion+v7Tests")
 struct UUIDVersionV7Tests {
     private static let randA = 0xCC3
-    private static let randB = (0b01 << 60) | 0x8_C4_DC_0C_0C_07_39_8F
+    private static let randB: Int64 = (0b01 << 60) | 0x8_C4_DC_0C_0C_07_39_8F
     private let mockDateService = MockDateService()
     private let mockRandomNumberGenerator = MockRandomNumberGenerator(
         bytesValue: [
