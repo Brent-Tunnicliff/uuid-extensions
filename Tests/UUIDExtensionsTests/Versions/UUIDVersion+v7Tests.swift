@@ -29,9 +29,14 @@ struct UUIDVersionV7Tests {
         self.generator = VersionSevenUUIDGenerator(
             configuration: .default,
             dateService: mockDateService,
+            fixedLengthCounterState: VersionSevenUUIDGenerator.FixedLengthCounterState(
+                randomNumberGenerator: mockRandomNumberGenerator
+            ),
+            monotonicRandomCounterState: VersionSevenUUIDGenerator.MonotonicRandomCounterState(
+                randomNumberGenerator: mockRandomNumberGenerator
+            ),
             randomNumberGenerator: mockRandomNumberGenerator,
-            sleep: { _ in },
-            state: VersionSevenUUIDGenerator.State(randomNumberGenerator: mockRandomNumberGenerator)
+            sleep: { _ in }
         )
     }
 
@@ -99,9 +104,14 @@ struct UUIDVersionV7ConfigurationTests {
         let generator = VersionSevenUUIDGenerator(
             configuration: .withIncreasedClockPrecision,
             dateService: mockDateService,
+            fixedLengthCounterState: VersionSevenUUIDGenerator.FixedLengthCounterState(
+                randomNumberGenerator: mockRandomNumberGenerator
+            ),
+            monotonicRandomCounterState: VersionSevenUUIDGenerator.MonotonicRandomCounterState(
+                randomNumberGenerator: mockRandomNumberGenerator
+            ),
             randomNumberGenerator: mockRandomNumberGenerator,
-            sleep: { _ in },
-            state: VersionSevenUUIDGenerator.State(randomNumberGenerator: mockRandomNumberGenerator)
+            sleep: { _ in }
         )
 
         #expect(generator.new().uuidString == "017F22E2-7A2B-73E7-8001-020304050607")
@@ -177,9 +187,14 @@ struct UUIDVersionV7ConfigurationTests {
         let generator = VersionSevenUUIDGenerator(
             configuration: argument.configuration,
             dateService: mockDateService,
+            fixedLengthCounterState: VersionSevenUUIDGenerator.FixedLengthCounterState(
+                randomNumberGenerator: mockRandomNumberGenerator
+            ),
+            monotonicRandomCounterState: VersionSevenUUIDGenerator.MonotonicRandomCounterState(
+                randomNumberGenerator: mockRandomNumberGenerator
+            ),
             randomNumberGenerator: mockRandomNumberGenerator,
-            sleep: { _ in },
-            state: VersionSevenUUIDGenerator.State(randomNumberGenerator: mockRandomNumberGenerator)
+            sleep: { _ in }
         )
 
         var currentValue = generator.new()
@@ -227,14 +242,19 @@ struct UUIDVersionV7ConfigurationTests {
             let generator = VersionSevenUUIDGenerator(
                 configuration: argument.configuration,
                 dateService: mockDateService,
+                fixedLengthCounterState: VersionSevenUUIDGenerator.FixedLengthCounterState(
+                    randomNumberGenerator: mockRandomNumberGenerator
+                ),
+                monotonicRandomCounterState: VersionSevenUUIDGenerator.MonotonicRandomCounterState(
+                    randomNumberGenerator: mockRandomNumberGenerator
+                ),
                 randomNumberGenerator: mockRandomNumberGenerator,
                 sleep: {
                     // Make sure to increment the date to avoid this immediately getting called again.
                     // As the system will call to create a new UUID right after this "sleep".
                     mockDateService.nowValue = mockDateService.nowValue.advanced(by: 1)
                     continuation.resume(returning: $0)
-                },
-                state: VersionSevenUUIDGenerator.State(randomNumberGenerator: mockRandomNumberGenerator)
+                }
             )
 
             // For this test we don't care about the results, just that the system slept to wait
