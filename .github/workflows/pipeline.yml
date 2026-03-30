@@ -56,7 +56,7 @@ jobs:
           { sdks: "android", swift_sdk: "swift-6.3-RELEASE_android" },
           { sdks: "wasm", swift_sdk: "swift-6.3-RELEASE_wasm" },
         ]
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@customise_swift_version_and_sdk
+    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@v2
     name: "swift (${{ matrix.platform.sdks }})"
     with:
       runs_on: "ubuntu-latest"
