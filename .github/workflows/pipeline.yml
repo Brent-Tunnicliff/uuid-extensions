@@ -47,7 +47,7 @@ jobs:
     with:
       runs_on: "${{ matrix.run_on }}"
 
-  swift:
+  swift_sdks:
     strategy:
       # Don't cancel the other matrix values if one fails.
       fail-fast: false
