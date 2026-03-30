@@ -5,7 +5,27 @@ The purpose of this project is:
 1. Expand Foundation UUID creation to support various versions as per [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562) as creating a new Foundation.UUID object uses v4.
 2. Provide a macro for creating UUID's with StaticString that fails the build instead of returning optional if the input is invalid.
 3. Provide constants for `nil` and `max` UUIDs. 
-4. Support all swift platforms that can import Foundation. 
+4. Support all swift platforms that can import Foundation.UUID. But if any platform requires too much custom work to get working then I may decide to ignore.
+
+## Supported platforms
+
+Apple platforms, including:
+
+- iOS
+- macOS
+- tvOS
+- visionOS
+- watchOS
+
+Other supported platforms:
+
+- Android
+- Linux
+- WASM
+- Windows
+
+> [!WARNING]
+> These other platforms have only been tested via CI pipeline. Some only by building. So please report any issues found with them.
 
 ## Installation
 

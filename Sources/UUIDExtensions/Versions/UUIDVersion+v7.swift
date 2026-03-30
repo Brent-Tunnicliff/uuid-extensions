@@ -47,7 +47,7 @@ struct VersionSevenUUIDGenerator {
             configuration: configuration,
             dateService: .default,
             randomNumberGenerator: .default,
-            sleep: { Thread.sleep(forTimeInterval: $0) },
+            sleep: Sleep.for,
             state: .shared
         )
     }
