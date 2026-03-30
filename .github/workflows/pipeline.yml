@@ -52,14 +52,19 @@ jobs:
       # Don't cancel the other matrix values if one fails.
       fail-fast: false
       matrix:
-        sdk: [
-          "android",
-          "wasm"
+        paltform: [
+          { sdks: "android", swift_sdk: "swift-6.3-RELEASE_android" },
+          { sdks: "wasm", swift_sdk: "swift-6.3-RELEASE_wasm" },
         ]
     uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@customise_swift_version_and_sdk
     with:
       runs_on: "ubuntu-latest"
       sdks: "${{ matrix.sdk }}"
+      # Due to a bug we cannot build test targets for packages that contain macros when cross compiling different archs.
+      # See: https://github.com/swiftlang/swift-package-manager/issues/8094
+      skip_tests: true
+      swift_sdk: "${{ matrix.swift_sdk }}"
+      swift_version: "6.3"
 
   # lint:
   #   uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/lint.yml@v2
