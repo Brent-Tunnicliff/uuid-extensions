@@ -42,6 +42,10 @@ jobs:
           --output-path ./.build/docs/
           --warnings-as-errors
 
+      - name: List docs files
+        shell: bash
+        run: ls -R ./.build/docs/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
