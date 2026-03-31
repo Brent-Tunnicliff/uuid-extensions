@@ -6,8 +6,8 @@ on:
   push:
     branches:
       - "documentation"
-    paths:
-      - "**.swift"
+    # paths:
+    #   - "**.swift"
   workflow_dispatch:
 
 permissions:
@@ -36,7 +36,6 @@ jobs:
           --allow-writing-to-directory ./.build/docs/
           generate-documentation
           --target UUIDExtensions
-          --disable-indexing
           --transform-for-static-hosting
           --hosting-base-path UUIDExtensions
           --output-path ./.build/docs/
