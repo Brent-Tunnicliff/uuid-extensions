@@ -3,11 +3,11 @@
 name: Publish Documentation to GitHub Pages
 
 on:
-  push:
-    branches:
-      - "documentation"
-    # paths:
-    #   - "**.swift"
+  workflow_run:
+    workflows: 
+      - "Pipeline"
+    types: 
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -21,9 +21,21 @@ concurrency:
 
 jobs:
   deploy:
+    if: >
+      ${{
+        github.event_name == 'workflow_dispatch' ||
+        (
+          github.event.workflow_run &&
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.head_branch == 'documentation'
+        )
+      }}
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

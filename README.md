@@ -348,6 +348,10 @@ let id: UUID = .x500
 
 <https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
+### See more
+
+See <https://brent-tunnicliff.github.io/uuid-extensions/documentation/uuidextensions> for more details.
+
 ## Source Stability
 
 The versioning of this package follows [Semantic Versioning](https://semver.org/). Source breaking changes to public API require a new major version.
