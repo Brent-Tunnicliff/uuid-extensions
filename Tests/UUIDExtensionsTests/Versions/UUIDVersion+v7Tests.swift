@@ -333,14 +333,14 @@ extension MockRandomNumberGenerator {
 }
 
 /// Wraps the input SleepProvider which does get called, but completion handler gets called after the wrapped object finishes.
-final class WrappedSleepProvider: SleepProvider, @unchecked Sendable {
+final class WrappedSleepProvider: SleepProvider {
     private let wrapped: any SleepProvider
 
-    private let completionHandler: () -> Void
+    private let completionHandler: @Sendable () -> Void
 
     init(
         wrapped: any SleepProvider,
-        completionHandler: @escaping () -> Void
+        completionHandler: @Sendable @escaping () -> Void
     ) {
         self.completionHandler = completionHandler
         self.wrapped = wrapped
