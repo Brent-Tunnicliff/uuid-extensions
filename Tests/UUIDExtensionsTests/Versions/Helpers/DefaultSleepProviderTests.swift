@@ -9,6 +9,9 @@ struct DefaultSleepProviderTests {
     let sleepProvider = DefaultSleepProvider()
 
     @Test
+    @available(iOS 16.0, *)
+    @available(tvOS 16.0, *)
+    @available(watchOS 9.0, *)
     func `for`() async throws {
         try await withThrowingTaskGroup { group in
             group.addTask {
@@ -27,6 +30,9 @@ struct DefaultSleepProviderTests {
     }
 
     @Test
+    @available(iOS 16.0, *)
+    @available(tvOS 16.0, *)
+    @available(watchOS 9.0, *)
     func withLockFor() async throws {
         try await withThrowingTaskGroup { group in
             group.addTask {
