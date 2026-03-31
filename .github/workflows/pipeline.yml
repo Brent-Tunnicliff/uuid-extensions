@@ -3,11 +3,12 @@
 name: Pipeline
 
 on:
-  push:
-    paths:
-      - '**.resolved'
-      - '**.swift'
-      - '**.yml'
+  # TODO: enable push again when ready.
+  # push:
+  #   paths:
+  #     - '**.resolved'
+  #     - '**.swift'
+  #     - '**.yml'
   workflow_dispatch:
 
 jobs:

@@ -1,0 +1,52 @@
+# Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
+
+name: Publish Documentation to GitHub Pages
+
+on:
+  push:
+    branches:
+      - "documentation"
+    paths:
+      - "**.swift"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: SwiftyLab/setup-swift@v1
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Generate Documentation
+        shell: bash
+        run: swift package
+          --allow-writing-to-directory ./.build/docs/
+          generate-documentation
+          --target UUIDExtensions
+          --disable-indexing
+          --transform-for-static-hosting
+          --hosting-base-path UUIDExtensions
+          --output-path ./.build/docs/
+          --warnings-as-errors
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: './.build/docs/'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
