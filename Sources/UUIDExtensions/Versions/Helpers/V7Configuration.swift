@@ -24,7 +24,7 @@ extension V7Configuration {
     /// Generates with milliseconds in the most significant bits and random for the remaining.
     ///
     /// - warning: If multiple values are generated within the same millisecond there is no guarantee of order between them.
-    ///   If you need to guarantee the order, then recommend using ``withFixedLengthCounter`` or ``withMonotonicRandomCounter`` instead.
+    ///   If you need to guarantee the order, then recommend using ``with(counter:)`` or  ``withIncreasedClockPrecision(counter:)`` instead.
     public static let `default` = V7Configuration()
 
     /// UUID will generate with an increased clock precision.
