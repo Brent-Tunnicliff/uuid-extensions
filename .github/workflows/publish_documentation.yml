@@ -37,6 +37,7 @@ jobs:
           generate-documentation
           --target UUIDExtensions
           --transform-for-static-hosting
+          --hosting-base-path uuid-extensions
           --output-path ./.build/docs/
           --warnings-as-errors
 
