@@ -38,6 +38,9 @@ jobs:
           --hosting-base-path uuid-extensions
           --output-path ./.build/docs/
           --warnings-as-errors
+          --checkout-path .
+          --source-service github
+          --source-service-base-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}"
 
       - name: Add redirect index
         run: |
