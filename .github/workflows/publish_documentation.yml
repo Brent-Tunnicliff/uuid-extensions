@@ -41,6 +41,20 @@ jobs:
           --output-path ./.build/docs/
           --warnings-as-errors
 
+      - name: Add redirect index
+        run: |
+          cat > ./.build/docs/index.html <<EOF
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta http-equiv="refresh" content="0; url=./documentation/uuidextensions/">
+            </head>
+            <body>
+              <p>Redirecting to documentation...</p>
+            </body>
+          </html>
+          EOF
+
       - name: List docs files
         shell: bash
         run: ls -R ./.build/docs/
@@ -53,3 +67,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+      - name: Success
+        shell: bash
+        run: echo "Documentation deployed to ${{ steps.deployment.outputs.page_url }}"
