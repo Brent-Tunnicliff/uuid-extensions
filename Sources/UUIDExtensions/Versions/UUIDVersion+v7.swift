@@ -39,7 +39,7 @@ struct VersionSevenUUIDGenerator {
     private let microsecond: TimeInterval = 0.000001
     private let millisecond: TimeInterval = 0.001
     private let randomNumberGenerator: any RandomNumberGenerator
-    private let sleep: @Sendable (TimeInterval) -> Void
+    private let sleepProvider: any SleepProvider
     private let fixedLengthCounterState: FixedLengthCounterState
     private let monotonicRandomCounterState: MonotonicRandomCounterState
 
@@ -50,7 +50,7 @@ struct VersionSevenUUIDGenerator {
             fixedLengthCounterState: .shared,
             monotonicRandomCounterState: .shared,
             randomNumberGenerator: .default,
-            sleep: Sleep.for,
+            sleepProvider: .default,
         )
     }
 
@@ -60,14 +60,14 @@ struct VersionSevenUUIDGenerator {
         fixedLengthCounterState: FixedLengthCounterState,
         monotonicRandomCounterState: MonotonicRandomCounterState,
         randomNumberGenerator: any RandomNumberGenerator,
-        sleep: @Sendable @escaping (TimeInterval) -> Void
+        sleepProvider: any SleepProvider
     ) {
         self.configuration = configuration
         self.dateService = dateService
         self.fixedLengthCounterState = fixedLengthCounterState
         self.monotonicRandomCounterState = monotonicRandomCounterState
         self.randomNumberGenerator = randomNumberGenerator
-        self.sleep = sleep
+        self.sleepProvider = sleepProvider
     }
 }
 
@@ -151,7 +151,7 @@ extension VersionSevenUUIDGenerator: UUIDGenerator {
             // The only way that this can fail is in the unlikely case that the counter was at the limit
             // and could no longer increment.
             // If that happens the only solution is to wait until the next timestamp before we can try again.
-            sleep(configuration.increasedClockPrecision ? microsecond : millisecond)
+            sleepProvider.for(configuration.increasedClockPrecision ? microsecond : millisecond)
             return new()
         }
 

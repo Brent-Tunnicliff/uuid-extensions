@@ -36,7 +36,7 @@ struct UUIDVersionV7Tests {
                 randomNumberGenerator: mockRandomNumberGenerator
             ),
             randomNumberGenerator: mockRandomNumberGenerator,
-            sleep: { _ in }
+            sleepProvider: MockSleepProvider()
         )
     }
 
@@ -85,6 +85,7 @@ struct UUIDVersionV7Tests {
 struct UUIDVersionV7ConfigurationTests {
     private let mockDateService: MockDateService
     private let mockRandomNumberGenerator: MockRandomNumberGenerator
+    private let mockSleepProvider = MockSleepProvider()
 
     init() throws {
         let formatter = ISO8601DateFormatter()
@@ -111,7 +112,7 @@ struct UUIDVersionV7ConfigurationTests {
                 randomNumberGenerator: mockRandomNumberGenerator
             ),
             randomNumberGenerator: mockRandomNumberGenerator,
-            sleep: { _ in }
+            sleepProvider: mockSleepProvider
         )
 
         #expect(generator.new().uuidString == "017F22E2-7A2B-73E7-8001-020304050607")
@@ -194,7 +195,7 @@ struct UUIDVersionV7ConfigurationTests {
                 randomNumberGenerator: mockRandomNumberGenerator
             ),
             randomNumberGenerator: mockRandomNumberGenerator,
-            sleep: { _ in }
+            sleepProvider: mockSleepProvider
         )
 
         var currentValue = generator.new()
@@ -230,14 +231,14 @@ struct UUIDVersionV7ConfigurationTests {
     @Test(arguments: CounterArgument.allCases)
     func counterWaitsForNextTimestampAtMaxValue(_ argument: CounterArgument) async {
         let sleepLength = await withCheckedContinuation { continuation in
-            // Initially set all as max.
-            let mockRandomNumberGenerator = MockRandomNumberGenerator(
-                bytesValue: (0..<40).map { _ in UInt8.max },
-                clockSequence: UInt16.max,
-                int48: UInt64.max,
-                ofSizeUInt16: (0..<40).map { _ in UInt16.max },
-                singleByteValues: (0..<40).map { _ in UInt8.max }
-            )
+            let mockRandomNumberGenerator = MockRandomNumberGenerator.maxValues
+
+            mockSleepProvider.forHandler = {
+                // Make sure to increment the date to avoid this immediately getting called again.
+                // As the system will call to create a new UUID right after this "sleep".
+                mockDateService.nowValue = mockDateService.nowValue.advanced(by: 1)
+                continuation.resume(returning: $0)
+            }
 
             let generator = VersionSevenUUIDGenerator(
                 configuration: argument.configuration,
@@ -249,12 +250,7 @@ struct UUIDVersionV7ConfigurationTests {
                     randomNumberGenerator: mockRandomNumberGenerator
                 ),
                 randomNumberGenerator: mockRandomNumberGenerator,
-                sleep: {
-                    // Make sure to increment the date to avoid this immediately getting called again.
-                    // As the system will call to create a new UUID right after this "sleep".
-                    mockDateService.nowValue = mockDateService.nowValue.advanced(by: 1)
-                    continuation.resume(returning: $0)
-                }
+                sleepProvider: mockSleepProvider
             )
 
             // For this test we don't care about the results, just that the system slept to wait
@@ -266,5 +262,89 @@ struct UUIDVersionV7ConfigurationTests {
         }
 
         #expect(sleepLength == argument.expectedSleepSeconds)
+    }
+
+    /// Sanity test that the real sleep logic does not take a long time.
+    @Test(arguments: CounterArgument.allCases)
+    func waitingForNextTimestampShouldBeVerySmall(_ argument: CounterArgument) async throws {
+        try await withThrowingTaskGroup { group in
+            // timeout task
+            group.addTask {
+                // We are just picking a low value that will hopefully not be flaky when running in CI.
+                try await Task.sleep(for: .milliseconds(10))
+                throw TimeoutError()
+            }
+
+            // real action task
+            group.addTask {
+                await withCheckedContinuation { continuation in
+                    let mockRandomNumberGenerator = MockRandomNumberGenerator.maxValues
+
+                    let wrappedSleepProvider = WrappedSleepProvider(wrapped: .default) {
+                        // Make sure to increment the date to avoid this immediately getting called again.
+                        // As the system will call to create a new UUID right after this "sleep".
+                        mockDateService.nowValue = mockDateService.nowValue.advanced(by: 1)
+                        continuation.resume()
+                    }
+
+                    let generator = VersionSevenUUIDGenerator(
+                        configuration: argument.configuration,
+                        dateService: mockDateService,
+                        fixedLengthCounterState: VersionSevenUUIDGenerator.FixedLengthCounterState(
+                            randomNumberGenerator: mockRandomNumberGenerator
+                        ),
+                        monotonicRandomCounterState: VersionSevenUUIDGenerator.MonotonicRandomCounterState(
+                            randomNumberGenerator: mockRandomNumberGenerator
+                        ),
+                        randomNumberGenerator: mockRandomNumberGenerator,
+                        sleepProvider: wrappedSleepProvider
+                    )
+
+                    // For this test we don't care about the results, just that the system slept to wait
+                    // for the next timestamp value.
+                    _ = generator.new()
+
+                    // We trigger the first one with the max values, then we expect this second call to trigger the sleep.
+                    _ = generator.new()
+                }
+            }
+
+            // Await for the first group to return, if it is the timeout then it will throw.
+            try await group.first(where: { _ in true })
+            group.cancelAll()
+        }
+    }
+}
+
+extension MockRandomNumberGenerator {
+    /// Initially set all as max.
+    static var maxValues: MockRandomNumberGenerator {
+        MockRandomNumberGenerator(
+            bytesValue: (0..<40).map { _ in UInt8.max },
+            clockSequence: UInt16.max,
+            int48: UInt64.max,
+            ofSizeUInt16: (0..<40).map { _ in UInt16.max },
+            singleByteValues: (0..<40).map { _ in UInt8.max }
+        )
+    }
+}
+
+/// Wraps the input SleepProvider which does get called, but completion handler gets called after the wrapped object finishes.
+final class WrappedSleepProvider: SleepProvider, @unchecked Sendable {
+    private let wrapped: any SleepProvider
+
+    private let completionHandler: () -> Void
+
+    init(
+        wrapped: any SleepProvider,
+        completionHandler: @escaping () -> Void
+    ) {
+        self.completionHandler = completionHandler
+        self.wrapped = wrapped
+    }
+
+    func `for`(_ timeInterval: TimeInterval) {
+        wrapped.for(timeInterval)
+        completionHandler()
     }
 }
