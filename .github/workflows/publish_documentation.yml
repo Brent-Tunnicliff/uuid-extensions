@@ -38,7 +38,7 @@ jobs:
           --hosting-base-path uuid-extensions
           --output-path ./.build/docs/
           --warnings-as-errors
-          --checkout-path .
+          --checkout-path "$GITHUB_WORKSPACE"
           --source-service github
           --source-service-base-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}"
 
