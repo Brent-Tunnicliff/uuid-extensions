@@ -37,7 +37,6 @@ jobs:
           --transform-for-static-hosting
           --hosting-base-path uuid-extensions
           --output-path ./.build/docs/
-          --disable-indexing
           --warnings-as-errors
 
       - name: Add redirect index
