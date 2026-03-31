@@ -39,31 +39,35 @@ struct VersionSevenUUIDGenerator {
     private let microsecond: TimeInterval = 0.000001
     private let millisecond: TimeInterval = 0.001
     private let randomNumberGenerator: any RandomNumberGenerator
-    private let sleep: @Sendable (TimeInterval) -> Void
-    private let state: State
+    private let sleepProvider: any SleepProvider
+    private let fixedLengthCounterState: FixedLengthCounterState
+    private let monotonicRandomCounterState: MonotonicRandomCounterState
 
     fileprivate init(configuration: V7Configuration) {
         self.init(
             configuration: configuration,
             dateService: .default,
+            fixedLengthCounterState: .shared,
+            monotonicRandomCounterState: .shared,
             randomNumberGenerator: .default,
-            sleep: Sleep.for,
-            state: .shared
+            sleepProvider: .default,
         )
     }
 
     init(
         configuration: V7Configuration,
         dateService: any DateService,
+        fixedLengthCounterState: FixedLengthCounterState,
+        monotonicRandomCounterState: MonotonicRandomCounterState,
         randomNumberGenerator: any RandomNumberGenerator,
-        sleep: @Sendable @escaping (TimeInterval) -> Void,
-        state: State
+        sleepProvider: any SleepProvider
     ) {
         self.configuration = configuration
         self.dateService = dateService
+        self.fixedLengthCounterState = fixedLengthCounterState
+        self.monotonicRandomCounterState = monotonicRandomCounterState
         self.randomNumberGenerator = randomNumberGenerator
-        self.sleep = sleep
-        self.state = state
+        self.sleepProvider = sleepProvider
     }
 }
 
@@ -128,13 +132,16 @@ extension VersionSevenUUIDGenerator: UUIDGenerator {
                 randomBytes = generateRandomBytes(currentIndex: currentIndexValue)
             case .fixedLength:
                 // Add the counter then had the rest with random values.
-                let fixedLength = try state.getFixedLengthCounter(timestamp: timestamp, microseconds: microseconds)
+                let fixedLength = try fixedLengthCounterState.getFixedLengthCounter(
+                    timestamp: timestamp,
+                    microseconds: microseconds
+                )
                 bytes[index] = UInt8((fixedLength >> 8) & 0xFF)
                 bytes[index] = UInt8(fixedLength & 0xFF)
                 randomBytes = generateRandomBytes(currentIndex: currentIndexValue)
             case .monotonicRandom:
                 // The random values are the counter as they always go up for the same.
-                randomBytes = try state.getMonotonicRandomCounter(
+                randomBytes = try monotonicRandomCounterState.getMonotonicRandomCounter(
                     timestamp: timestamp,
                     microseconds: microseconds,
                     size: maxSize - currentIndexValue
@@ -144,7 +151,7 @@ extension VersionSevenUUIDGenerator: UUIDGenerator {
             // The only way that this can fail is in the unlikely case that the counter was at the limit
             // and could no longer increment.
             // If that happens the only solution is to wait until the next timestamp before we can try again.
-            sleep(configuration.increasedClockPrecision ? microsecond : millisecond)
+            sleepProvider.for(configuration.increasedClockPrecision ? microsecond : millisecond)
             return new()
         }
 
@@ -195,8 +202,8 @@ extension VersionSevenUUIDGenerator: UUIDGenerator {
 
 extension VersionSevenUUIDGenerator {
     /// Shared state kept in memory and referenced while generating UUIDv7 values.
-    final class State: @unchecked Sendable {
-        static let shared = State()
+    final class FixedLengthCounterState: @unchecked Sendable {
+        static let shared = FixedLengthCounterState()
         private let lock = NSLock()
         private let randomNumberGenerator: any RandomNumberGenerator
 
@@ -236,6 +243,25 @@ extension VersionSevenUUIDGenerator {
         private func cacheAndReturnFixedLengthCounter(_ value: UInt16, for key: Key) -> UInt16 {
             fixedLengthCounterCache = (key, value)
             return value
+        }
+    }
+
+    /// Shared state kept in memory and referenced while generating UUIDv7 values.
+    final class MonotonicRandomCounterState: @unchecked Sendable {
+        static let shared = MonotonicRandomCounterState()
+        private let lock = NSLock()
+        private let randomNumberGenerator: any RandomNumberGenerator
+
+        // We want different size values to maintain seperate caches.
+        // This way the consumer can create both increased precision and not without them affecting each other.
+        private var monotonicRandomCounterCache: [Int: (key: Key, value: [UInt8])] = [:]
+
+        private convenience init() {
+            self.init(randomNumberGenerator: .default)
+        }
+
+        init(randomNumberGenerator: any RandomNumberGenerator) {
+            self.randomNumberGenerator = randomNumberGenerator
         }
 
         func getMonotonicRandomCounter(timestamp: UInt64, microseconds: UInt64, size: Int) throws -> [UInt8] {
@@ -288,12 +314,12 @@ extension VersionSevenUUIDGenerator {
     }
 }
 
-extension VersionSevenUUIDGenerator.State {
+extension VersionSevenUUIDGenerator {
     private struct Key: Comparable, Hashable {
         let timestamp: UInt64
         let microseconds: UInt64
 
-        static func < (lhs: VersionSevenUUIDGenerator.State.Key, rhs: VersionSevenUUIDGenerator.State.Key) -> Bool {
+        static func < (lhs: VersionSevenUUIDGenerator.Key, rhs: VersionSevenUUIDGenerator.Key) -> Bool {
             guard lhs.timestamp == rhs.timestamp else {
                 return lhs.timestamp < rhs.timestamp
             }
