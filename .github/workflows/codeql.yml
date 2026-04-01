@@ -19,6 +19,7 @@ on:
   schedule:
     # Scheduled to run the first day of each month.
     - cron: '0 0 1 * *'
+  workflow_dispatch:
 
 jobs:
   analyze:

@@ -253,7 +253,7 @@ The implementation in this package is just a way to wrap the desired value and s
 
 Can be generated based on:
 
-- `uuid_t`: The same type used in `Foundation.init(uuid:)`. But we edit it to set the version and variant.
+- `uuid_t`: The same type used in `Foundation.UUID(uuid:)`. But we edit it to set the version and variant.
 - `Data`: We take the prefix of data, pad the end with 0 if needed, then set the version and variant.
 
 <https://www.rfc-editor.org/rfc/rfc9562#name-uuid-version-8>

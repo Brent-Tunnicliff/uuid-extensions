@@ -13,6 +13,8 @@ on:
       - '**.yml'
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   xcodebuild:
     strategy:
