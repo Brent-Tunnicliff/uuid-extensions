@@ -1,6 +1,9 @@
 # Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-name: Publish Documentation to GitHub Pages
+# This workflow is responsible for building and publishing the documentation.
+# It is expected to run for changes to main branch after the Pipeline workflow succeeds.
+
+name: Documentation
 
 on:
   workflow_run:

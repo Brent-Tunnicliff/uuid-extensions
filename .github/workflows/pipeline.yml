@@ -1,5 +1,8 @@
 # Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
+# The main workflow of the project.
+# Responsible for building and testing the project.
+
 name: Pipeline
 
 on:
