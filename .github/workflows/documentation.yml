@@ -12,78 +12,12 @@ on:
     types: 
       - completed
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  push:
 
 jobs:
-  deploy:
-    if: >
-      ${{
-        github.event_name == 'workflow_dispatch' ||
-        (
-          github.event.workflow_run &&
-          github.event.workflow_run.conclusion == 'success' &&
-          github.event.workflow_run.head_branch == 'documentation'
-        )
-      }}
-    runs-on: macos-26
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-          fetch-depth: 0
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-
-      - name: Generate Documentation
-        shell: bash
-        run: swift package
-          --allow-writing-to-directory ./.build/docs/
-          generate-documentation
-          --target UUIDExtensions
-          --transform-for-static-hosting
-          --hosting-base-path uuid-extensions
-          --output-path ./.build/docs/
-          --warnings-as-errors
-          --checkout-path "$GITHUB_WORKSPACE"
-          --source-service github
-          --source-service-base-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}"
-
-      - name: Add redirect index
-        run: |
-          cat > ./.build/docs/index.html <<EOF
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta http-equiv="refresh" content="0; url=./documentation/uuidextensions/">
-            </head>
-            <body>
-              <p>Redirecting to documentation...</p>
-            </body>
-          </html>
-          EOF
-
-      - name: List docs files
-        shell: bash
-        run: ls -R ./.build/docs/
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: './.build/docs/'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
-
-      - name: Success
-        shell: bash
-        run: echo "Documentation deployed to ${{ steps.deployment.outputs.page_url }}"
+  documentation:
+    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/documentation.yml@add_documentation_workflow
+    with:
+      fetch_depth: 0
+      ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      target: "UUIDExtensions"
