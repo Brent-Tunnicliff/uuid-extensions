@@ -12,7 +12,6 @@ on:
     types: 
       - completed
   workflow_dispatch:
-  push:
 
 permissions:
   contents: read
@@ -21,7 +20,16 @@ permissions:
 
 jobs:
   documentation:
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/documentation.yml@add_documentation_workflow
+    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/documentation.yml@v2
+    if: >
+      ${{
+        github.event_name == 'workflow_dispatch' ||
+        (
+          github.event.workflow_run &&
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.head_branch == 'main'
+        )
+      }}
     with:
       fetch_depth: 0
       ref: ${{ github.event.workflow_run.head_sha || github.sha }}
