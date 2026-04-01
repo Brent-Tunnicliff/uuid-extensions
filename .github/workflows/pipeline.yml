@@ -13,6 +13,8 @@ on:
       - '**.yml'
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   xcodebuild:
     strategy:
@@ -46,7 +48,7 @@ jobs:
           "macos-latest",
           "windows-latest",
         ]
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@v2
+    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@permissions
     with:
       runs_on: "${{ matrix.run_on }}"
 
@@ -59,7 +61,7 @@ jobs:
           { sdks: "android", swift_sdk: "swift-6.3-RELEASE_android" },
           { sdks: "wasm", swift_sdk: "swift-6.3-RELEASE_wasm" },
         ]
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@v2
+    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/swift.yml@permissions
     name: "swift (${{ matrix.platform.sdks }})"
     with:
       runs_on: "ubuntu-latest"
@@ -71,6 +73,6 @@ jobs:
       swift_version: "6.3"
 
   lint:
-    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/lint.yml@v2
+    uses: Brent-Tunnicliff/workflow-common-apple/.github/workflows/lint.yml@permissions
     with:
       runs_on: "macos-26"
