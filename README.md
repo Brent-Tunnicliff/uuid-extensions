@@ -136,7 +136,7 @@ Useful for generating meaningful UUID's that can be repeated/verified.
 It is recommended to use `v5` over this if possible.
 
 ```swift
-// Can use a specified constant as the namespace like `.domain`, `.url`, `.oid`, `.x500`, or your own custom UUID value.
+// Can use a specified constant as the namespace like `.dns`, `.url`, `.oid`, `.x500`, or your own custom UUID value.
 let namespace: UUID
 let name: String
 
@@ -171,7 +171,7 @@ Has no random or time based aspect, so passing in the same inputs will always re
 Useful for generating meaningful UUID's that can be repeated/verified.
 
 ```swift
-// Can use a specified constant as the namespace like `.domain`, `.url`, `.oid`, `.x500`, or your own custom UUID value.
+// Can use a specified constant as the namespace like `.dns`, `.url`, `.oid`, `.x500`, or your own custom UUID value.
 let namespace: UUID
 let name: String
 
