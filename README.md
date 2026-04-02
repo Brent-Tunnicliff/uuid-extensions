@@ -282,7 +282,7 @@ let id: UUID = #uuid("hello :)")
 The project has a small number of constants defined in [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562).
 They are added as static extension to the Foundation.UUID type.
 
-#### nil
+#### UUID.nil
 
 Nil UUID has all 128 bits set to 0.
 
@@ -293,7 +293,7 @@ let id: UUID = .nil
 
 <https://www.rfc-editor.org/rfc/rfc9562#section-5.9>
 
-#### max
+#### UUID.max
 
 Max UUID has all 128 bits set to 1.
 
@@ -304,7 +304,7 @@ let id: UUID = .max
 
 <https://www.rfc-editor.org/rfc/rfc9562#section-5.10>.
 
-#### dns
+#### UUID.dns
 
 DNS namespace ID for v3 and v5 UUID's.
 
@@ -315,7 +315,7 @@ let id: UUID = .dns
 
 <https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
-#### url
+#### UUID.url
 
 URL namespace ID for v3 and v5 UUID's.
 
@@ -326,7 +326,7 @@ let id: UUID = .url
 
 <https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
-#### oid
+#### UUID.oid
 
 OID namespace ID for v3 and v5 UUID's.
 
@@ -337,7 +337,7 @@ let id: UUID = .oid
 
 <https://www.rfc-editor.org/rfc/rfc9562#section-6.6>
 
-#### x500
+#### UUID.x500
 
 X500 namespace ID for v3 and v5 UUID's.
 
