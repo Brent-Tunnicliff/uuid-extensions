@@ -1,6 +1,10 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-public import Foundation
+#if canImport(FoundationEssentials)
+    public import FoundationEssentials
+#else
+    public import Foundation
+#endif
 
 /// Macro for checking if uuid is valid at compile time and removing the usual optional.
 ///

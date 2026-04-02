@@ -1,8 +1,13 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-import Foundation
 import Testing
 @testable import UUIDExtensions
+
+#if canImport(FoundationEssentials)
+    import FoundationEssentials
+#else
+    import Foundation
+#endif
 
 @Suite("UUIDVersion+v7Tests")
 struct UUIDVersionV7Tests {

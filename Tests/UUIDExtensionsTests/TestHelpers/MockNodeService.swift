@@ -1,7 +1,12 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-import Foundation
 @testable import UUIDExtensions
+
+#if canImport(FoundationEssentials)
+    import FoundationEssentials
+#else
+    import Foundation
+#endif
 
 final class MockNodeService: NodeService, @unchecked Sendable {
     private let lock = NSLock()

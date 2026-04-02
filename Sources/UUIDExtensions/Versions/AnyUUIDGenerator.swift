@@ -1,6 +1,10 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-public import Foundation
+#if canImport(FoundationEssentials)
+    public import FoundationEssentials
+#else
+    public import Foundation
+#endif
 
 /// Type erased UUIDGenerator.
 public struct AnyUUIDGenerator {

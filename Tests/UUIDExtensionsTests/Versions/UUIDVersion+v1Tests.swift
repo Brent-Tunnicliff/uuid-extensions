@@ -1,8 +1,13 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-import Foundation
 import Testing
 @testable import UUIDExtensions
+
+#if canImport(FoundationEssentials)
+    import FoundationEssentials
+#else
+    import Foundation
+#endif
 
 @Suite("UUIDVersion+v1Tests")
 struct UUIDVersionV1Tests {
@@ -70,5 +75,13 @@ struct UUIDVersionV1Tests {
             uuid.wholeMatch(of: regex) != nil,
             "'\(uuid)' did not advance the clockSequence as expected"
         )
+    }
+
+    // Sanity check to see which platforms can actually use `FoundationEssentials`. Will delete afterwards.
+    @Test
+    func canImportFoundationEssentials() {
+        #if canImport(FoundationEssentials)
+            Issue.record("FoundationEssentials")
+        #endif
     }
 }

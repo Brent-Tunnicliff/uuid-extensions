@@ -1,9 +1,14 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
 import Crypto
-import Foundation
 import Testing
 @testable import UUIDExtensions
+
+#if canImport(FoundationEssentials)
+    import FoundationEssentials
+#else
+    import Foundation
+#endif
 
 @Suite("UUIDVersion+v8Tests")
 struct UUIDVersionV8Tests {

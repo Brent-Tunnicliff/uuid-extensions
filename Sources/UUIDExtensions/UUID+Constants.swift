@@ -1,6 +1,10 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
-public import Foundation
+#if canImport(FoundationEssentials)
+    public import FoundationEssentials
+#else
+    public import Foundation
+#endif
 
 extension UUID {
     /// Nil UUID has all 128 bits set to 0.

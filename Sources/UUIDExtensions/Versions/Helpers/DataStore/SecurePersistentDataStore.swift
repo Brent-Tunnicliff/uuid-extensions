@@ -1,7 +1,12 @@
 // Copyright © 2026 Brent Tunnicliff <brent@tunnicliff.dev>
 
 import Crypto
-import Foundation
+
+#if canImport(FoundationEssentials)
+    import FoundationEssentials
+#else
+    import Foundation
+#endif
 
 struct SecurePersistentDataStore {
     private let authenticatedData: Data?
